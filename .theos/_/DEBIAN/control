@@ -2,9 +2,9 @@ Package: com.atar13.houdini
 Name: Houdini
 Depends: mobilesubstrate
 Architecture: iphoneos-arm
-Description: An awesome MobileSubstrate tweak!
+Description: By default hides the lock screen clock until the user manually taps the screen.
 Maintainer: atar13
 Author: atar13
 Section: Tweaks
-Version: 0.0.1-42+debug
+Version: 0.0.1-43+debug
 Installed-Size: 200
