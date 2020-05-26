@@ -4,7 +4,6 @@
 <dict>
 	<key>items</key>
 	<array>
-		
 		<dict>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
@@ -95,7 +94,7 @@
 			<key>PostNotification</key>
 			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
 		</dict>
-				<dict>
+		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
@@ -125,17 +124,15 @@
 			<key>cell</key>
 			<string>PSSliderCell</string>
 			<key>default</key>
-			<integer>2</integer>
+			<real>0.25</real>
 			<key>min</key>
-			<integer>1</integer>
+			<real>0.1</real>
 			<key>max</key>
-			<integer>5</integer>
+			<integer>2</integer>
 			<key>showValue</key>
 			<true/>
 			<key>isSegmented</key>
-			<true/>
-			<key>segmentCount</key>
-			<integer>4</integer>
+			<false/>
 			<key>defaults</key>
 			<string>com.atar13.houdiniprefs</string>
 			<key>key</key>

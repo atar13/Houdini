@@ -1,17 +1,24 @@
 
 #import <Cephei/HBPreferences.h>
 
-
-//pref ideas
+//TODO:
 //TIMER
 //maybe an option for which areas to tap on
-//number of taps
-//number of fingers
-//maybe long press
-//enabled or not
+//number of taps : DONE
+//number of fingers : DONE
+//maybe long press : DONE
+//enabled or not : DONE
 //timeout number vs toggling mode
 //maybe hide notifs too
 //Fade animation?
+//change prefs from Cephei to something else idk
+//add cephei package info cell
+//add cephei twitter info cell
+
+
+//credits to NoisyFlake for the timer code and getting it to run in the main thread
+//https://github.com/NoisyFlake/OhMyFlash
+
 
 BOOL isEnabled;
 
@@ -21,9 +28,12 @@ NSInteger numberOfFingersTapped;
 
 BOOL isLongPressModeEnabled;
 NSInteger numberOfFingersHeld;
-NSInteger longPressDuration;
+double longPressDuration;
 
 BOOL dateIsHidden = TRUE;
+
+NSTimer *longPressTimer = nil;
+BOOL longPressHasBeenHidden;
 
 @interface SBFLockScreenDateViewController : UIViewController
 -(void)_updateView;
@@ -37,7 +47,29 @@ SBFLockScreenDateViewController *timeVC;
 		%orig;
 		timeVC = (SBFLockScreenDateViewController *)self;
 	}
+
+	-(void)_updateView{
+		%orig;
+			if(longPressHasBeenHidden){
+		dispatch_async(dispatch_get_main_queue(), ^{
+			longPressTimer = [NSTimer scheduledTimerWithTimeInterval:1
+										target:self
+										selector:@selector(hideDateAfterDelay)
+										userInfo:nil
+										repeats:NO];
+		});
+	}
+	}
+
+%new
+-(void)hideDateAfterDelay{
+	dateIsHidden = TRUE;
+	[timeVC _updateView];
+	longPressHasBeenHidden = FALSE;
+}
 %end
+
+
 
 
 
@@ -48,13 +80,40 @@ SBFLockScreenDateViewController *timeVC;
 %hook NCNotificationStructuredListViewController
 
 -(void)viewDidLoad {
-	%orig;
 	UIViewController *_self = (UIViewController *)self;
-	UITapGestureRecognizer *tapPress =  [[UITapGestureRecognizer alloc] initWithTarget:_self action:@selector(handleTap:)];
-	tapPress.numberOfTapsRequired = (int)numberOfTaps;
-	tapPress.numberOfTouchesRequired = (int)numberOfFingersTapped;
-	[_self.view addGestureRecognizer:tapPress];
-	// _self.userInteractionEnabled = TRUE;
+
+	if(isTapModeEnabled){
+		%orig;
+		UITapGestureRecognizer *tapPress =  [[UITapGestureRecognizer alloc] initWithTarget:_self action:@selector(handleTap:)];
+		tapPress.numberOfTapsRequired = (int)numberOfTaps;
+		tapPress.numberOfTouchesRequired = (int)numberOfFingersTapped;
+		[_self.view addGestureRecognizer:tapPress];
+		// _self.userInteractionEnabled = TRUE;
+	}else if(isLongPressModeEnabled){
+		%orig;
+		UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:_self action:@selector(handleLongPress:)];
+		longPress.minimumPressDuration = longPressDuration;
+		longPress.numberOfTouchesRequired = (int)numberOfFingersHeld;
+		[_self.view addGestureRecognizer: longPress];
+	}
+	else if(isTapModeEnabled&&isLongPressModeEnabled){
+		%orig;
+	}
+	else{
+		%orig;
+	}
+
+	// if(longPressHasBeenHidden){
+	// 	// longPressHasBeenHidden = FALSE;
+	// 	HBLogWarn(@"LONGPRESSDELAY");
+	// 	dispatch_async(dispatch_get_main_queue(), ^{
+	// 		longPressTimer = [NSTimer scheduledTimerWithTimeInterval:1
+	// 									target:self
+	// 									selector:@selector(hideDateAfterDelay)
+	// 									userInfo:nil
+	// 									repeats:NO];
+	// 	});
+	// }
 
 }
 
@@ -69,8 +128,20 @@ SBFLockScreenDateViewController *timeVC;
 	}
 }
 
-// %new
-// -(void)handleLongPress
+%new
+-(void)handleLongPress:(UILongPressGestureRecognizer *)sender{
+
+		if(!dateIsHidden){
+		// dateIsHidden = TRUE;	
+		// [timeVC _updateView];
+	}else{
+		dateIsHidden = FALSE;
+		longPressHasBeenHidden = TRUE;
+		[timeVC _updateView];
+	}
+}
+
+
 %end
 
 
@@ -110,7 +181,12 @@ SBFLockScreenDateViewController *timeVC;
 %ctor {
 	HBPreferences *prefs = [[HBPreferences alloc] initWithIdentifier:@"com.atar13.houdiniprefs"];
 	[prefs registerBool:&isEnabled default:TRUE forKey:@"isEnabled"];
+	[prefs registerBool:&isTapModeEnabled default:TRUE forKey:@"isTapModeEnabled"];
 	[prefs registerInteger:&numberOfTaps default:2 forKey:@"numberOfTaps"];
 	[prefs registerInteger:&numberOfFingersTapped default:1 forKey:@"numberOfFingersTapped"];
+	[prefs registerBool:&isLongPressModeEnabled default:FALSE forKey:@"isLongPressModeEnabled"];
+	[prefs registerInteger:&numberOfFingersHeld default:1 forKey:@"numberOfFingersHeld"];
+	[prefs registerDouble:&longPressDuration default:0.5 forKey:@"longPressDuration"];
+
 	%init;
 }
