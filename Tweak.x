@@ -1,12 +1,24 @@
-bool dateIsTapped = YES;
+//pref ideas
+//TIMER
+//maybe an option for which areas to tap on
+//number of taps
+//number of fingers
+//maybe long press
+//enabled or not
+//timeout number vs toggling mode
+//maybe hide notifs too
 
-int counter = 0;
+
+bool dateIsHidden = YES;
+int timer = 0;
 
 @interface SBFLockScreenDateViewController : UIViewController
 -(void)_updateView;
 @end
 
 SBFLockScreenDateViewController *timeVC;
+
+
 
 %hook SBFLockScreenDateViewController
 
@@ -16,15 +28,27 @@ SBFLockScreenDateViewController *timeVC;
 
 	timeVC = (SBFLockScreenDateViewController *)self;
 
+
+
+		NSString *timerString = [NSString stringWithFormat:@"%d",timer];
+
+	HBLogWarn(@"TimerString %@\n",timerString);
+	
+
+
+
 	}
+
+	
 
 %end
 
-//maybe an option for which areas to tap on
 @interface NCNotificationStructuredListViewController : UIViewController
+-(void)onTick;
 @end
 
 %hook NCNotificationStructuredListViewController
+
 
 
 -(void)viewDidLoad {
@@ -34,20 +58,25 @@ SBFLockScreenDateViewController *timeVC;
 	tapPress.numberOfTapsRequired = 2;
 	[_self.view addGestureRecognizer:tapPress];
 	// _self.userInteractionEnabled = YES;
+
+	
 }
 
 %new
 -(void)handleTap:(UITapGestureRecognizer *)sender{
-	if(!dateIsTapped){
-	counter=0;
-	dateIsTapped = YES;
-
+	if(!dateIsHidden){
+		dateIsHidden = YES;
 	
-	}else{
-		dateIsTapped = NO;
-		counter++;
-	}
 	[timeVC _updateView];
+
+	}else{
+		dateIsHidden = NO;
+		[timeVC _updateView];
+
+	}
+
+
+
 }
 
 %end
@@ -59,14 +88,15 @@ SBFLockScreenDateViewController *timeVC;
 
 %hook SBFLockScreenDateView
 
-int timer = 0;
+
 
 -(void)_updateLabels{
 	%orig;
 
 
+
 	//check if area is tapped
-	if(dateIsTapped){
+	if(dateIsHidden){
 	self.subtitleHidden = YES;
 	self.hidden = YES;
 	HBLogWarn(@"NOTLOADED");
@@ -76,7 +106,14 @@ int timer = 0;
 	self.hidden = NO;
 	HBLogWarn(@"ISLOADED");
 
+	
+	// self.subtitleHidden = YES;
+	// self.hidden = YES;	
 	}
+
+
+//
+
 
 }
 
