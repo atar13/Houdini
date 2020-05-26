@@ -14,8 +14,15 @@
 //Fade animation?
 
 BOOL isEnabled;
+
+BOOL isTapModeEnabled;
 NSInteger numberOfTaps;
 NSInteger numberOfFingersTapped;
+
+BOOL isLongPressModeEnabled;
+NSInteger numberOfFingersHeld;
+NSInteger longPressDuration;
+
 BOOL dateIsHidden = TRUE;
 
 @interface SBFLockScreenDateViewController : UIViewController
@@ -36,7 +43,6 @@ SBFLockScreenDateViewController *timeVC;
 
 
 @interface NCNotificationStructuredListViewController : UIViewController
--(void)onTick;
 @end
 
 %hook NCNotificationStructuredListViewController
@@ -62,6 +68,9 @@ SBFLockScreenDateViewController *timeVC;
 		[timeVC _updateView];
 	}
 }
+
+// %new
+// -(void)handleLongPress
 %end
 
 

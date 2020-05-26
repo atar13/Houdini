@@ -15,8 +15,15 @@
 
 
 BOOL isEnabled;
+
+BOOL isTapModeEnabled;
 NSInteger numberOfTaps;
 NSInteger numberOfFingersTapped;
+
+BOOL isLongPressModeEnabled;
+NSInteger numberOfFingersHeld;
+NSInteger longPressDuration;
+
 BOOL dateIsHidden = TRUE;
 
 @interface SBFLockScreenDateViewController : UIViewController
@@ -46,10 +53,10 @@ SBFLockScreenDateViewController *timeVC;
 #define _LOGOS_RETURN_RETAINED
 #endif
 
-@class SBFLockScreenDateView; @class SBFLockScreenDateViewController; @class NCNotificationStructuredListViewController; 
+@class SBFLockScreenDateView; @class NCNotificationStructuredListViewController; @class SBFLockScreenDateViewController; 
 static void (*_logos_orig$_ungrouped$SBFLockScreenDateViewController$viewDidLoad)(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$SBFLockScreenDateViewController$viewDidLoad(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$NCNotificationStructuredListViewController$viewDidLoad)(_LOGOS_SELF_TYPE_NORMAL NCNotificationStructuredListViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$NCNotificationStructuredListViewController$viewDidLoad(_LOGOS_SELF_TYPE_NORMAL NCNotificationStructuredListViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$NCNotificationStructuredListViewController$handleTap$(_LOGOS_SELF_TYPE_NORMAL NCNotificationStructuredListViewController* _LOGOS_SELF_CONST, SEL, UITapGestureRecognizer *); static void (*_logos_orig$_ungrouped$SBFLockScreenDateView$_updateLabels)(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$SBFLockScreenDateView$_updateLabels(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateView* _LOGOS_SELF_CONST, SEL); 
 
-#line 27 "Tweak.x"
+#line 34 "Tweak.x"
 
 
 	static void _logos_method$_ungrouped$SBFLockScreenDateViewController$viewDidLoad(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd){
@@ -93,6 +100,9 @@ static void _logos_method$_ungrouped$NCNotificationStructuredListViewController$
 
 
 
+
+
+
 @interface SBFLockScreenDateView : UIView
 @property (assign,getter=isSubtitleHidden,nonatomic) BOOL subtitleHidden;
 @end
@@ -124,7 +134,7 @@ static void _logos_method$_ungrouped$SBFLockScreenDateView$_updateLabels(_LOGOS_
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_d3183886(int __unused argc, char __unused **argv, char __unused **envp) {
+static __attribute__((constructor)) void _logosLocalCtor_7fe63bfc(int __unused argc, char __unused **argv, char __unused **envp) {
 	HBPreferences *prefs = [[HBPreferences alloc] initWithIdentifier:@"com.atar13.houdiniprefs"];
 	[prefs registerBool:&isEnabled default:TRUE forKey:@"isEnabled"];
 	[prefs registerInteger:&numberOfTaps default:2 forKey:@"numberOfTaps"];
