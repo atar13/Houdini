@@ -17,9 +17,7 @@
 
 
 
-
-
-
+HBPreferences *prefs;
 
 BOOL isEnabled;
 
@@ -30,11 +28,13 @@ NSInteger numberOfFingersTapped;
 BOOL isLongPressModeEnabled;
 NSInteger numberOfFingersHeld;
 double longPressDuration;
+CGFloat allowableMovement = 20;
 
 BOOL dateIsHidden = TRUE;
 
 NSTimer *longPressTimer = nil;
 BOOL longPressHasBeenHidden;
+double clockDisplayDuration;
 
 @interface SBFLockScreenDateViewController : UIViewController
 -(void)_updateView;
@@ -63,7 +63,7 @@ SBFLockScreenDateViewController *timeVC;
 #define _LOGOS_RETURN_RETAINED
 #endif
 
-@class SBFLockScreenDateViewController; @class SBFLockScreenDateView; @class NCNotificationStructuredListViewController; 
+@class NCNotificationStructuredListViewController; @class SBFLockScreenDateViewController; @class SBFLockScreenDateView; 
 static void (*_logos_orig$_ungrouped$SBFLockScreenDateViewController$viewDidLoad)(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$SBFLockScreenDateViewController$viewDidLoad(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$SBFLockScreenDateViewController$_updateView)(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$SBFLockScreenDateViewController$_updateView(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$SBFLockScreenDateViewController$hideDateAfterDelay(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$NCNotificationStructuredListViewController$viewDidLoad)(_LOGOS_SELF_TYPE_NORMAL NCNotificationStructuredListViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$NCNotificationStructuredListViewController$viewDidLoad(_LOGOS_SELF_TYPE_NORMAL NCNotificationStructuredListViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$NCNotificationStructuredListViewController$handleTap$(_LOGOS_SELF_TYPE_NORMAL NCNotificationStructuredListViewController* _LOGOS_SELF_CONST, SEL, UITapGestureRecognizer *); static void _logos_method$_ungrouped$NCNotificationStructuredListViewController$handleLongPress$(_LOGOS_SELF_TYPE_NORMAL NCNotificationStructuredListViewController* _LOGOS_SELF_CONST, SEL, UILongPressGestureRecognizer *); static void (*_logos_orig$_ungrouped$SBFLockScreenDateView$_updateLabels)(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$SBFLockScreenDateView$_updateLabels(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateView* _LOGOS_SELF_CONST, SEL); 
 
 #line 44 "Tweak.x"
@@ -77,8 +77,12 @@ static void (*_logos_orig$_ungrouped$SBFLockScreenDateViewController$viewDidLoad
 	static void _logos_method$_ungrouped$SBFLockScreenDateViewController$_updateView(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd){
 		_logos_orig$_ungrouped$SBFLockScreenDateViewController$_updateView(self, _cmd);
 			if(longPressHasBeenHidden){
+
+	
+	
+
 		dispatch_async(dispatch_get_main_queue(), ^{
-			longPressTimer = [NSTimer scheduledTimerWithTimeInterval:1
+			longPressTimer = [NSTimer scheduledTimerWithTimeInterval:clockDisplayDuration
 										target:self
 										selector:@selector(hideDateAfterDelay)
 										userInfo:nil
@@ -93,7 +97,6 @@ static void _logos_method$_ungrouped$SBFLockScreenDateViewController$hideDateAft
 	[timeVC _updateView];
 	longPressHasBeenHidden = FALSE;
 }
-
 
 
 
@@ -120,6 +123,7 @@ static void _logos_method$_ungrouped$NCNotificationStructuredListViewController$
 		UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:_self action:@selector(handleLongPress:)];
 		longPress.minimumPressDuration = longPressDuration;
 		longPress.numberOfTouchesRequired = (int)numberOfFingersHeld;
+		longPress.allowableMovement = allowableMovement;
 		[_self.view addGestureRecognizer: longPress];
 	}
 	else if(isTapModeEnabled&&isLongPressModeEnabled){
@@ -203,9 +207,7 @@ static void _logos_method$_ungrouped$SBFLockScreenDateView$_updateLabels(_LOGOS_
 
 
 
-
-static __attribute__((constructor)) void _logosLocalCtor_c5118bb3(int __unused argc, char __unused **argv, char __unused **envp) {
-	HBPreferences *prefs = [[HBPreferences alloc] initWithIdentifier:@"com.atar13.houdiniprefs"];
+void updateSettings(){
 	[prefs registerBool:&isEnabled default:TRUE forKey:@"isEnabled"];
 	[prefs registerBool:&isTapModeEnabled default:TRUE forKey:@"isTapModeEnabled"];
 	[prefs registerInteger:&numberOfTaps default:2 forKey:@"numberOfTaps"];
@@ -213,6 +215,16 @@ static __attribute__((constructor)) void _logosLocalCtor_c5118bb3(int __unused a
 	[prefs registerBool:&isLongPressModeEnabled default:FALSE forKey:@"isLongPressModeEnabled"];
 	[prefs registerInteger:&numberOfFingersHeld default:1 forKey:@"numberOfFingersHeld"];
 	[prefs registerDouble:&longPressDuration default:0.5 forKey:@"longPressDuration"];
+	[prefs registerDouble:&clockDisplayDuration default:0.5 forKey:@"clockDisplayDuration"];
+}
+
+
+
+
+static __attribute__((constructor)) void _logosLocalCtor_c93c8224(int __unused argc, char __unused **argv, char __unused **envp) {
+	prefs= [[HBPreferences alloc] initWithIdentifier:@"com.atar13.houdiniprefs"];
+	updateSettings();
+	
 
 	{Class _logos_class$_ungrouped$SBFLockScreenDateViewController = objc_getClass("SBFLockScreenDateViewController"); MSHookMessageEx(_logos_class$_ungrouped$SBFLockScreenDateViewController, @selector(viewDidLoad), (IMP)&_logos_method$_ungrouped$SBFLockScreenDateViewController$viewDidLoad, (IMP*)&_logos_orig$_ungrouped$SBFLockScreenDateViewController$viewDidLoad);MSHookMessageEx(_logos_class$_ungrouped$SBFLockScreenDateViewController, @selector(_updateView), (IMP)&_logos_method$_ungrouped$SBFLockScreenDateViewController$_updateView, (IMP*)&_logos_orig$_ungrouped$SBFLockScreenDateViewController$_updateView);{ char _typeEncoding[1024]; unsigned int i = 0; _typeEncoding[i] = 'v'; i += 1; _typeEncoding[i] = '@'; i += 1; _typeEncoding[i] = ':'; i += 1; _typeEncoding[i] = '\0'; class_addMethod(_logos_class$_ungrouped$SBFLockScreenDateViewController, @selector(hideDateAfterDelay), (IMP)&_logos_method$_ungrouped$SBFLockScreenDateViewController$hideDateAfterDelay, _typeEncoding); }Class _logos_class$_ungrouped$NCNotificationStructuredListViewController = objc_getClass("NCNotificationStructuredListViewController"); MSHookMessageEx(_logos_class$_ungrouped$NCNotificationStructuredListViewController, @selector(viewDidLoad), (IMP)&_logos_method$_ungrouped$NCNotificationStructuredListViewController$viewDidLoad, (IMP*)&_logos_orig$_ungrouped$NCNotificationStructuredListViewController$viewDidLoad);{ char _typeEncoding[1024]; unsigned int i = 0; _typeEncoding[i] = 'v'; i += 1; _typeEncoding[i] = '@'; i += 1; _typeEncoding[i] = ':'; i += 1; memcpy(_typeEncoding + i, @encode(UITapGestureRecognizer *), strlen(@encode(UITapGestureRecognizer *))); i += strlen(@encode(UITapGestureRecognizer *)); _typeEncoding[i] = '\0'; class_addMethod(_logos_class$_ungrouped$NCNotificationStructuredListViewController, @selector(handleTap:), (IMP)&_logos_method$_ungrouped$NCNotificationStructuredListViewController$handleTap$, _typeEncoding); }{ char _typeEncoding[1024]; unsigned int i = 0; _typeEncoding[i] = 'v'; i += 1; _typeEncoding[i] = '@'; i += 1; _typeEncoding[i] = ':'; i += 1; memcpy(_typeEncoding + i, @encode(UILongPressGestureRecognizer *), strlen(@encode(UILongPressGestureRecognizer *))); i += strlen(@encode(UILongPressGestureRecognizer *)); _typeEncoding[i] = '\0'; class_addMethod(_logos_class$_ungrouped$NCNotificationStructuredListViewController, @selector(handleLongPress:), (IMP)&_logos_method$_ungrouped$NCNotificationStructuredListViewController$handleLongPress$, _typeEncoding); }Class _logos_class$_ungrouped$SBFLockScreenDateView = objc_getClass("SBFLockScreenDateView"); MSHookMessageEx(_logos_class$_ungrouped$SBFLockScreenDateView, @selector(_updateLabels), (IMP)&_logos_method$_ungrouped$SBFLockScreenDateView$_updateLabels, (IMP*)&_logos_orig$_ungrouped$SBFLockScreenDateView$_updateLabels);}
 }

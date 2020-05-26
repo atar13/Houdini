@@ -1,6 +1,7 @@
 
 #import <Cephei/HBPreferences.h>
 
+
 //TODO:
 //TIMER
 //maybe an option for which areas to tap on
@@ -15,10 +16,7 @@
 //add cephei package info cell
 //add cephei twitter info cell
 
-
-//credits to NoisyFlake for the timer code and getting it to run in the main thread
-//https://github.com/NoisyFlake/OhMyFlash
-
+HBPreferences *prefs;
 
 BOOL isEnabled;
 
@@ -29,11 +27,13 @@ NSInteger numberOfFingersTapped;
 BOOL isLongPressModeEnabled;
 NSInteger numberOfFingersHeld;
 double longPressDuration;
+CGFloat allowableMovement = 20;
 
 BOOL dateIsHidden = TRUE;
 
 NSTimer *longPressTimer = nil;
 BOOL longPressHasBeenHidden;
+double clockDisplayDuration;
 
 @interface SBFLockScreenDateViewController : UIViewController
 -(void)_updateView;
@@ -51,8 +51,12 @@ SBFLockScreenDateViewController *timeVC;
 	-(void)_updateView{
 		%orig;
 			if(longPressHasBeenHidden){
+
+	//credits to NoisyFlake for the timer code and getting it to run in the main thread
+	//https://github.com/NoisyFlake/OhMyFlash
+
 		dispatch_async(dispatch_get_main_queue(), ^{
-			longPressTimer = [NSTimer scheduledTimerWithTimeInterval:1
+			longPressTimer = [NSTimer scheduledTimerWithTimeInterval:clockDisplayDuration
 										target:self
 										selector:@selector(hideDateAfterDelay)
 										userInfo:nil
@@ -68,7 +72,6 @@ SBFLockScreenDateViewController *timeVC;
 	longPressHasBeenHidden = FALSE;
 }
 %end
-
 
 
 
@@ -94,6 +97,7 @@ SBFLockScreenDateViewController *timeVC;
 		UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:_self action:@selector(handleLongPress:)];
 		longPress.minimumPressDuration = longPressDuration;
 		longPress.numberOfTouchesRequired = (int)numberOfFingersHeld;
+		longPress.allowableMovement = allowableMovement;
 		[_self.view addGestureRecognizer: longPress];
 	}
 	else if(isTapModeEnabled&&isLongPressModeEnabled){
@@ -177,9 +181,7 @@ SBFLockScreenDateViewController *timeVC;
 
 %end
 
-
-%ctor {
-	HBPreferences *prefs = [[HBPreferences alloc] initWithIdentifier:@"com.atar13.houdiniprefs"];
+void updateSettings(){
 	[prefs registerBool:&isEnabled default:TRUE forKey:@"isEnabled"];
 	[prefs registerBool:&isTapModeEnabled default:TRUE forKey:@"isTapModeEnabled"];
 	[prefs registerInteger:&numberOfTaps default:2 forKey:@"numberOfTaps"];
@@ -187,6 +189,16 @@ SBFLockScreenDateViewController *timeVC;
 	[prefs registerBool:&isLongPressModeEnabled default:FALSE forKey:@"isLongPressModeEnabled"];
 	[prefs registerInteger:&numberOfFingersHeld default:1 forKey:@"numberOfFingersHeld"];
 	[prefs registerDouble:&longPressDuration default:0.5 forKey:@"longPressDuration"];
+	[prefs registerDouble:&clockDisplayDuration default:0.5 forKey:@"clockDisplayDuration"];
+}
+
+
+
+
+%ctor {
+	prefs= [[HBPreferences alloc] initWithIdentifier:@"com.atar13.houdiniprefs"];
+	updateSettings();
+	// CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)updateSettings, CFSTR("com.atar13.houdini/updateSettings"), NULL, kNilOptions);
 
 	%init;
 }
