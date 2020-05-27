@@ -6,6 +6,12 @@
 	<array>
 		<dict>
 			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Respring is needed to change number of fingers</string>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
 			<true/>
@@ -193,6 +199,18 @@
 			<string>clockDisplayDuration</string>
 			<key>PostNotification</key>
 			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>ONLY ENABLE ONE MODE, IF BOTH ARE ENABLED IT WILL DEFAULT TO TAP MODE</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>ONLY ENABLE ONE MODE, IF BOTH ARE ENABLED IT WILL DEFAULT TO TAP MODE</string>
 		</dict>
 	</array>
 	<key>title</key>

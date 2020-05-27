@@ -1,9 +1,17 @@
 Package: com.atar13.houdini
 Name: Houdini
-Depends: mobilesubstrate
-Version: 0.1.4
+Depends: mobilesubstrate, preferenceloader, ws.hsbang.common, 
+Version: 1.0
 Architecture: iphoneos-arm
 Description: By default hides the lock screen clock until the user manually taps the screen.
-Maintainer: atar13
-Author: atar13
+Maintainer: atar13 <atar13dev@gmail.com>
+Filename: ./debs/com.atar13.houdini_1.0_iphoneos-arm.deb
+Size: 20060
+MD5sum: a2e24db557b3ec69b3e11daa14741092
+SHA1: 5bca965c15ef88be61d93736c4129eb5f5166e15
+SHA256: e1f4a64e98e50819ec5b2ef5412fad981f0bb123c5a0356bbbe33277835611af
+Icon: file://Library/PreferenceBundles/houdiniprefs.bundle/icon@3x.png
+Author: atar13 <atar13dev@gmail.com>
 Section: Tweaks
+Depiction: https://atar13.github.io/depictions/?p=com.atar13.houdini
+

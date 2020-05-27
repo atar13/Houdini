@@ -102,6 +102,11 @@ SBFLockScreenDateViewController *timeVC;
 	}
 	else if(isTapModeEnabled&&isLongPressModeEnabled){
 		%orig;
+		UITapGestureRecognizer *tapPress =  [[UITapGestureRecognizer alloc] initWithTarget:_self action:@selector(handleTap:)];
+		tapPress.numberOfTapsRequired = (int)numberOfTaps;
+		tapPress.numberOfTouchesRequired = (int)numberOfFingersTapped;
+		[_self.view addGestureRecognizer:tapPress];
+		// _self.userInteractionEnabled = TRUE;
 	}
 	else{
 		%orig;
