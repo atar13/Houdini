@@ -1,12 +1,18 @@
+#import <spawn.h>
 #include "HOUDINIRootListController.h"
 
 @implementation HOUDINIRootListController
 
-void respring(){
-	NSTask *task = [[NSTask alloc] init];
-	[task setLaunchPath:@"/usr/bin/killall"];
-	[task setArguments:@[@"-9",@"SpringBoard"]];
-	[task launch];
+// void respring(){
+// 	NSTask *task = [[NSTask alloc] init];
+// 	[task setLaunchPath:@"/usr/bin/killall"];
+// 	[task setArguments:@[@"-9",@"SpringBoard"]];
+// 	[task launch];
+// }
+-(void)respring {
+	pid_t pid;
+	const char* args[] = {"killall", "-9", "backboardd", NULL};
+	posix_spawn(&pid, "/usr/bin/killall", NULL, NULL, (char* const*)args, NULL);
 }
 
 - (void)viewWillAppear:(BOOL)animated {

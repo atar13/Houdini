@@ -30,11 +30,70 @@ double longPressDuration;
 CGFloat allowableMovement = 20;
 
 BOOL dateIsHidden = TRUE;
+BOOL notifsAreHidden = TRUE;
 
 NSTimer *longPressTimer = nil;
 BOOL longPressHasBeenHidden;
 double clockDisplayDuration;
 
+BOOL isHideNotificationsEnabled;
+
+BOOL areNotifsTracking;
+BOOL areNotifsDragging;
+
+
+//hides notifications
+//maybe hook the NCNotificationStructuredListView view property
+@interface NCNotificationListView : UIScrollView
+@property (nonatomic, assign, readwrite, getter=isHidden)BOOL hidden;
+-(void)reloadHeaderView;
+@end
+NCNotificationListView *notifsView;
+
+//mayble hook CSMainView or CScrollView
+%hook NCNotificationListView
+
+
+//trakcing to stop timer: if scrolling and the notif view is not hidden
+
+	-(BOOL)isTracking{
+		areNotifsTracking = %orig;
+		if(areNotifsTracking){
+			HBLogWarn(@"notiftracking");
+		}
+		return %orig;
+	}
+
+	-(BOOL)isDragging{
+		areNotifsDragging = %orig;
+		if(areNotifsDragging){
+		HBLogWarn(@"notifdragging");
+		}
+		return %orig;
+	}
+
+-(void)reloadHeaderView{
+
+	notifsView = (NCNotificationListView *)self;
+
+
+	if(isEnabled){
+	%orig;
+	if(notifsAreHidden){
+		self.hidden = TRUE;
+	}else{
+		self.hidden = FALSE;
+	}
+}
+else{
+	%orig;
+}
+}
+
+%end
+
+
+//clock vc that creates the instance variable and starts timer when the view gets updated and the user just long pressed
 @interface SBFLockScreenDateViewController : UIViewController
 -(void)_updateView;
 @end
@@ -69,6 +128,10 @@ SBFLockScreenDateViewController *timeVC;
 -(void)hideDateAfterDelay{
 	dateIsHidden = TRUE;
 	[timeVC _updateView];
+	if(isHideNotificationsEnabled){
+			notifsAreHidden = TRUE;
+			[notifsView reloadHeaderView];
+	}
 	longPressHasBeenHidden = FALSE;
 }
 %end
@@ -77,12 +140,16 @@ SBFLockScreenDateViewController *timeVC;
 
 
 
+//handles the tap/long press gestures
 @interface NCNotificationStructuredListViewController : UIViewController
 @end
+
+NCNotificationStructuredListViewController *notifVC;
 
 %hook NCNotificationStructuredListViewController
 
 -(void)viewDidLoad {
+	notifVC = (NCNotificationStructuredListViewController *)self;
 	UIViewController *_self = (UIViewController *)self;
 
 	if(isTapModeEnabled){
@@ -131,9 +198,18 @@ SBFLockScreenDateViewController *timeVC;
 	if(!dateIsHidden){
 		dateIsHidden = TRUE;	
 		[timeVC _updateView];
+		if(isHideNotificationsEnabled){
+			notifsAreHidden = TRUE;
+			[notifsView reloadHeaderView];
+		}
+
 	}else{
 		dateIsHidden = FALSE;
 		[timeVC _updateView];
+		if(isHideNotificationsEnabled){
+			notifsAreHidden = FALSE;
+			[notifsView reloadHeaderView];
+		}
 	}
 }
 
@@ -143,10 +219,16 @@ SBFLockScreenDateViewController *timeVC;
 		if(!dateIsHidden){
 		// dateIsHidden = TRUE;	
 		// [timeVC _updateView];
+
 	}else{
-		dateIsHidden = FALSE;
 		longPressHasBeenHidden = TRUE;
+	
+		dateIsHidden = FALSE;
 		[timeVC _updateView];
+		if(isHideNotificationsEnabled){
+			notifsAreHidden = FALSE;
+			[notifsView reloadHeaderView];
+		}
 	}
 }
 
@@ -155,7 +237,7 @@ SBFLockScreenDateViewController *timeVC;
 
 
 
-
+//hides the clock/date 
 @interface SBFLockScreenDateView : UIView
 @property (assign,getter=isSubtitleHidden,nonatomic) BOOL subtitleHidden;
 @end
@@ -175,7 +257,7 @@ SBFLockScreenDateViewController *timeVC;
 		}else{
 			self.subtitleHidden = FALSE;
 			self.hidden = FALSE;
-			// HBLogWarn(@"ISLOADED");
+			// // HBLogWarn(@"ISLOADED");
 		}
 
 	}
@@ -186,15 +268,21 @@ SBFLockScreenDateViewController *timeVC;
 
 %end
 
+
+
 void updateSettings(){
 	[prefs registerBool:&isEnabled default:TRUE forKey:@"isEnabled"];
+
 	[prefs registerBool:&isTapModeEnabled default:TRUE forKey:@"isTapModeEnabled"];
 	[prefs registerInteger:&numberOfTaps default:2 forKey:@"numberOfTaps"];
 	[prefs registerInteger:&numberOfFingersTapped default:1 forKey:@"numberOfFingersTapped"];
+
 	[prefs registerBool:&isLongPressModeEnabled default:FALSE forKey:@"isLongPressModeEnabled"];
 	[prefs registerInteger:&numberOfFingersHeld default:1 forKey:@"numberOfFingersHeld"];
 	[prefs registerDouble:&longPressDuration default:0.5 forKey:@"longPressDuration"];
 	[prefs registerDouble:&clockDisplayDuration default:0.5 forKey:@"clockDisplayDuration"];
+
+	[prefs registerBool:&isHideNotificationsEnabled default:FALSE forKey:@"isHideNotificationsEnabled"];
 }
 
 

@@ -31,16 +31,26 @@ double longPressDuration;
 CGFloat allowableMovement = 20;
 
 BOOL dateIsHidden = TRUE;
+BOOL notifsAreHidden = TRUE;
 
 NSTimer *longPressTimer = nil;
 BOOL longPressHasBeenHidden;
 double clockDisplayDuration;
 
-@interface SBFLockScreenDateViewController : UIViewController
--(void)_updateView;
-@end
+BOOL isHideNotificationsEnabled;
 
-SBFLockScreenDateViewController *timeVC;
+BOOL areNotifsTracking;
+BOOL areNotifsDragging;
+
+
+
+
+@interface NCNotificationListView : UIScrollView
+@property (nonatomic, assign, readwrite, getter=isHidden)BOOL hidden;
+-(void)reloadHeaderView;
+@end
+NCNotificationListView *notifsView;
+
 
 
 #include <substrate.h>
@@ -63,10 +73,56 @@ SBFLockScreenDateViewController *timeVC;
 #define _LOGOS_RETURN_RETAINED
 #endif
 
-@class SBFLockScreenDateViewController; @class NCNotificationStructuredListViewController; @class SBFLockScreenDateView; 
-static void (*_logos_orig$_ungrouped$SBFLockScreenDateViewController$viewDidLoad)(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$SBFLockScreenDateViewController$viewDidLoad(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$SBFLockScreenDateViewController$_updateView)(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$SBFLockScreenDateViewController$_updateView(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$SBFLockScreenDateViewController$hideDateAfterDelay(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$NCNotificationStructuredListViewController$viewDidLoad)(_LOGOS_SELF_TYPE_NORMAL NCNotificationStructuredListViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$NCNotificationStructuredListViewController$viewDidLoad(_LOGOS_SELF_TYPE_NORMAL NCNotificationStructuredListViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$NCNotificationStructuredListViewController$handleTap$(_LOGOS_SELF_TYPE_NORMAL NCNotificationStructuredListViewController* _LOGOS_SELF_CONST, SEL, UITapGestureRecognizer *); static void _logos_method$_ungrouped$NCNotificationStructuredListViewController$handleLongPress$(_LOGOS_SELF_TYPE_NORMAL NCNotificationStructuredListViewController* _LOGOS_SELF_CONST, SEL, UILongPressGestureRecognizer *); static void (*_logos_orig$_ungrouped$SBFLockScreenDateView$_updateLabels)(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$SBFLockScreenDateView$_updateLabels(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateView* _LOGOS_SELF_CONST, SEL); 
+@class NCNotificationListView; @class SBFLockScreenDateView; @class NCNotificationStructuredListViewController; @class SBFLockScreenDateViewController; 
+static BOOL (*_logos_orig$_ungrouped$NCNotificationListView$isTracking)(_LOGOS_SELF_TYPE_NORMAL NCNotificationListView* _LOGOS_SELF_CONST, SEL); static BOOL _logos_method$_ungrouped$NCNotificationListView$isTracking(_LOGOS_SELF_TYPE_NORMAL NCNotificationListView* _LOGOS_SELF_CONST, SEL); static BOOL (*_logos_orig$_ungrouped$NCNotificationListView$isDragging)(_LOGOS_SELF_TYPE_NORMAL NCNotificationListView* _LOGOS_SELF_CONST, SEL); static BOOL _logos_method$_ungrouped$NCNotificationListView$isDragging(_LOGOS_SELF_TYPE_NORMAL NCNotificationListView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$NCNotificationListView$reloadHeaderView)(_LOGOS_SELF_TYPE_NORMAL NCNotificationListView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$NCNotificationListView$reloadHeaderView(_LOGOS_SELF_TYPE_NORMAL NCNotificationListView* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$SBFLockScreenDateViewController$viewDidLoad)(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$SBFLockScreenDateViewController$viewDidLoad(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$SBFLockScreenDateViewController$_updateView)(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$SBFLockScreenDateViewController$_updateView(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$SBFLockScreenDateViewController$hideDateAfterDelay(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST, SEL); static void (*_logos_orig$_ungrouped$NCNotificationStructuredListViewController$viewDidLoad)(_LOGOS_SELF_TYPE_NORMAL NCNotificationStructuredListViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$NCNotificationStructuredListViewController$viewDidLoad(_LOGOS_SELF_TYPE_NORMAL NCNotificationStructuredListViewController* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$NCNotificationStructuredListViewController$handleTap$(_LOGOS_SELF_TYPE_NORMAL NCNotificationStructuredListViewController* _LOGOS_SELF_CONST, SEL, UITapGestureRecognizer *); static void _logos_method$_ungrouped$NCNotificationStructuredListViewController$handleLongPress$(_LOGOS_SELF_TYPE_NORMAL NCNotificationStructuredListViewController* _LOGOS_SELF_CONST, SEL, UILongPressGestureRecognizer *); static void (*_logos_orig$_ungrouped$SBFLockScreenDateView$_updateLabels)(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateView* _LOGOS_SELF_CONST, SEL); static void _logos_method$_ungrouped$SBFLockScreenDateView$_updateLabels(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateView* _LOGOS_SELF_CONST, SEL); 
 
-#line 44 "Tweak.x"
+#line 54 "Tweak.x"
+
+
+	static BOOL _logos_method$_ungrouped$NCNotificationListView$isTracking(_LOGOS_SELF_TYPE_NORMAL NCNotificationListView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd){
+		areNotifsTracking = _logos_orig$_ungrouped$NCNotificationListView$isTracking(self, _cmd);
+		if(areNotifsTracking){
+			HBLogWarn(@"notiftracking");
+		}
+		return _logos_orig$_ungrouped$NCNotificationListView$isTracking(self, _cmd);
+	}
+
+	static BOOL _logos_method$_ungrouped$NCNotificationListView$isDragging(_LOGOS_SELF_TYPE_NORMAL NCNotificationListView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd){
+		areNotifsDragging = _logos_orig$_ungrouped$NCNotificationListView$isDragging(self, _cmd);
+		if(areNotifsDragging){
+		HBLogWarn(@"notifdragging");
+		}
+		return _logos_orig$_ungrouped$NCNotificationListView$isDragging(self, _cmd);
+	}
+
+static void _logos_method$_ungrouped$NCNotificationListView$reloadHeaderView(_LOGOS_SELF_TYPE_NORMAL NCNotificationListView* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd){
+
+	notifsView = (NCNotificationListView *)self;
+
+
+	if(isEnabled){
+	_logos_orig$_ungrouped$NCNotificationListView$reloadHeaderView(self, _cmd);
+	if(notifsAreHidden){
+		self.hidden = TRUE;
+	}else{
+		self.hidden = FALSE;
+	}
+}
+else{
+	_logos_orig$_ungrouped$NCNotificationListView$reloadHeaderView(self, _cmd);
+}
+}
+
+
+
+
+
+@interface SBFLockScreenDateViewController : UIViewController
+-(void)_updateView;
+@end
+
+SBFLockScreenDateViewController *timeVC;
+
 
 
 	static void _logos_method$_ungrouped$SBFLockScreenDateViewController$viewDidLoad(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd){
@@ -95,8 +151,13 @@ static void (*_logos_orig$_ungrouped$SBFLockScreenDateViewController$viewDidLoad
 static void _logos_method$_ungrouped$SBFLockScreenDateViewController$hideDateAfterDelay(_LOGOS_SELF_TYPE_NORMAL SBFLockScreenDateViewController* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd){
 	dateIsHidden = TRUE;
 	[timeVC _updateView];
+	if(isHideNotificationsEnabled){
+			notifsAreHidden = TRUE;
+			[notifsView reloadHeaderView];
+	}
 	longPressHasBeenHidden = FALSE;
 }
+
 
 
 
@@ -106,9 +167,12 @@ static void _logos_method$_ungrouped$SBFLockScreenDateViewController$hideDateAft
 @interface NCNotificationStructuredListViewController : UIViewController
 @end
 
+NCNotificationStructuredListViewController *notifVC;
+
 
 
 static void _logos_method$_ungrouped$NCNotificationStructuredListViewController$viewDidLoad(_LOGOS_SELF_TYPE_NORMAL NCNotificationStructuredListViewController* _LOGOS_SELF_CONST __unused self, SEL __unused _cmd) {
+	notifVC = (NCNotificationStructuredListViewController *)self;
 	UIViewController *_self = (UIViewController *)self;
 
 	if(isTapModeEnabled){
@@ -157,9 +221,18 @@ static void _logos_method$_ungrouped$NCNotificationStructuredListViewController$
 	if(!dateIsHidden){
 		dateIsHidden = TRUE;	
 		[timeVC _updateView];
+		if(isHideNotificationsEnabled){
+			notifsAreHidden = TRUE;
+			[notifsView reloadHeaderView];
+		}
+
 	}else{
 		dateIsHidden = FALSE;
 		[timeVC _updateView];
+		if(isHideNotificationsEnabled){
+			notifsAreHidden = FALSE;
+			[notifsView reloadHeaderView];
+		}
 	}
 }
 
@@ -169,10 +242,16 @@ static void _logos_method$_ungrouped$NCNotificationStructuredListViewController$
 		if(!dateIsHidden){
 		
 		
+
 	}else{
-		dateIsHidden = FALSE;
 		longPressHasBeenHidden = TRUE;
+	
+		dateIsHidden = FALSE;
 		[timeVC _updateView];
+		if(isHideNotificationsEnabled){
+			notifsAreHidden = FALSE;
+			[notifsView reloadHeaderView];
+		}
 	}
 }
 
@@ -212,24 +291,30 @@ static void _logos_method$_ungrouped$SBFLockScreenDateView$_updateLabels(_LOGOS_
 
 
 
+
+
 void updateSettings(){
 	[prefs registerBool:&isEnabled default:TRUE forKey:@"isEnabled"];
+
 	[prefs registerBool:&isTapModeEnabled default:TRUE forKey:@"isTapModeEnabled"];
 	[prefs registerInteger:&numberOfTaps default:2 forKey:@"numberOfTaps"];
 	[prefs registerInteger:&numberOfFingersTapped default:1 forKey:@"numberOfFingersTapped"];
+
 	[prefs registerBool:&isLongPressModeEnabled default:FALSE forKey:@"isLongPressModeEnabled"];
 	[prefs registerInteger:&numberOfFingersHeld default:1 forKey:@"numberOfFingersHeld"];
 	[prefs registerDouble:&longPressDuration default:0.5 forKey:@"longPressDuration"];
 	[prefs registerDouble:&clockDisplayDuration default:0.5 forKey:@"clockDisplayDuration"];
+
+	[prefs registerBool:&isHideNotificationsEnabled default:FALSE forKey:@"isHideNotificationsEnabled"];
 }
 
 
 
 
-static __attribute__((constructor)) void _logosLocalCtor_a863115f(int __unused argc, char __unused **argv, char __unused **envp) {
+static __attribute__((constructor)) void _logosLocalCtor_96660fcf(int __unused argc, char __unused **argv, char __unused **envp) {
 	prefs= [[HBPreferences alloc] initWithIdentifier:@"com.atar13.houdiniprefs"];
 	updateSettings();
 	
 
-	{Class _logos_class$_ungrouped$SBFLockScreenDateViewController = objc_getClass("SBFLockScreenDateViewController"); MSHookMessageEx(_logos_class$_ungrouped$SBFLockScreenDateViewController, @selector(viewDidLoad), (IMP)&_logos_method$_ungrouped$SBFLockScreenDateViewController$viewDidLoad, (IMP*)&_logos_orig$_ungrouped$SBFLockScreenDateViewController$viewDidLoad);MSHookMessageEx(_logos_class$_ungrouped$SBFLockScreenDateViewController, @selector(_updateView), (IMP)&_logos_method$_ungrouped$SBFLockScreenDateViewController$_updateView, (IMP*)&_logos_orig$_ungrouped$SBFLockScreenDateViewController$_updateView);{ char _typeEncoding[1024]; unsigned int i = 0; _typeEncoding[i] = 'v'; i += 1; _typeEncoding[i] = '@'; i += 1; _typeEncoding[i] = ':'; i += 1; _typeEncoding[i] = '\0'; class_addMethod(_logos_class$_ungrouped$SBFLockScreenDateViewController, @selector(hideDateAfterDelay), (IMP)&_logos_method$_ungrouped$SBFLockScreenDateViewController$hideDateAfterDelay, _typeEncoding); }Class _logos_class$_ungrouped$NCNotificationStructuredListViewController = objc_getClass("NCNotificationStructuredListViewController"); MSHookMessageEx(_logos_class$_ungrouped$NCNotificationStructuredListViewController, @selector(viewDidLoad), (IMP)&_logos_method$_ungrouped$NCNotificationStructuredListViewController$viewDidLoad, (IMP*)&_logos_orig$_ungrouped$NCNotificationStructuredListViewController$viewDidLoad);{ char _typeEncoding[1024]; unsigned int i = 0; _typeEncoding[i] = 'v'; i += 1; _typeEncoding[i] = '@'; i += 1; _typeEncoding[i] = ':'; i += 1; memcpy(_typeEncoding + i, @encode(UITapGestureRecognizer *), strlen(@encode(UITapGestureRecognizer *))); i += strlen(@encode(UITapGestureRecognizer *)); _typeEncoding[i] = '\0'; class_addMethod(_logos_class$_ungrouped$NCNotificationStructuredListViewController, @selector(handleTap:), (IMP)&_logos_method$_ungrouped$NCNotificationStructuredListViewController$handleTap$, _typeEncoding); }{ char _typeEncoding[1024]; unsigned int i = 0; _typeEncoding[i] = 'v'; i += 1; _typeEncoding[i] = '@'; i += 1; _typeEncoding[i] = ':'; i += 1; memcpy(_typeEncoding + i, @encode(UILongPressGestureRecognizer *), strlen(@encode(UILongPressGestureRecognizer *))); i += strlen(@encode(UILongPressGestureRecognizer *)); _typeEncoding[i] = '\0'; class_addMethod(_logos_class$_ungrouped$NCNotificationStructuredListViewController, @selector(handleLongPress:), (IMP)&_logos_method$_ungrouped$NCNotificationStructuredListViewController$handleLongPress$, _typeEncoding); }Class _logos_class$_ungrouped$SBFLockScreenDateView = objc_getClass("SBFLockScreenDateView"); MSHookMessageEx(_logos_class$_ungrouped$SBFLockScreenDateView, @selector(_updateLabels), (IMP)&_logos_method$_ungrouped$SBFLockScreenDateView$_updateLabels, (IMP*)&_logos_orig$_ungrouped$SBFLockScreenDateView$_updateLabels);}
+	{Class _logos_class$_ungrouped$NCNotificationListView = objc_getClass("NCNotificationListView"); MSHookMessageEx(_logos_class$_ungrouped$NCNotificationListView, @selector(isTracking), (IMP)&_logos_method$_ungrouped$NCNotificationListView$isTracking, (IMP*)&_logos_orig$_ungrouped$NCNotificationListView$isTracking);MSHookMessageEx(_logos_class$_ungrouped$NCNotificationListView, @selector(isDragging), (IMP)&_logos_method$_ungrouped$NCNotificationListView$isDragging, (IMP*)&_logos_orig$_ungrouped$NCNotificationListView$isDragging);MSHookMessageEx(_logos_class$_ungrouped$NCNotificationListView, @selector(reloadHeaderView), (IMP)&_logos_method$_ungrouped$NCNotificationListView$reloadHeaderView, (IMP*)&_logos_orig$_ungrouped$NCNotificationListView$reloadHeaderView);Class _logos_class$_ungrouped$SBFLockScreenDateViewController = objc_getClass("SBFLockScreenDateViewController"); MSHookMessageEx(_logos_class$_ungrouped$SBFLockScreenDateViewController, @selector(viewDidLoad), (IMP)&_logos_method$_ungrouped$SBFLockScreenDateViewController$viewDidLoad, (IMP*)&_logos_orig$_ungrouped$SBFLockScreenDateViewController$viewDidLoad);MSHookMessageEx(_logos_class$_ungrouped$SBFLockScreenDateViewController, @selector(_updateView), (IMP)&_logos_method$_ungrouped$SBFLockScreenDateViewController$_updateView, (IMP*)&_logos_orig$_ungrouped$SBFLockScreenDateViewController$_updateView);{ char _typeEncoding[1024]; unsigned int i = 0; _typeEncoding[i] = 'v'; i += 1; _typeEncoding[i] = '@'; i += 1; _typeEncoding[i] = ':'; i += 1; _typeEncoding[i] = '\0'; class_addMethod(_logos_class$_ungrouped$SBFLockScreenDateViewController, @selector(hideDateAfterDelay), (IMP)&_logos_method$_ungrouped$SBFLockScreenDateViewController$hideDateAfterDelay, _typeEncoding); }Class _logos_class$_ungrouped$NCNotificationStructuredListViewController = objc_getClass("NCNotificationStructuredListViewController"); MSHookMessageEx(_logos_class$_ungrouped$NCNotificationStructuredListViewController, @selector(viewDidLoad), (IMP)&_logos_method$_ungrouped$NCNotificationStructuredListViewController$viewDidLoad, (IMP*)&_logos_orig$_ungrouped$NCNotificationStructuredListViewController$viewDidLoad);{ char _typeEncoding[1024]; unsigned int i = 0; _typeEncoding[i] = 'v'; i += 1; _typeEncoding[i] = '@'; i += 1; _typeEncoding[i] = ':'; i += 1; memcpy(_typeEncoding + i, @encode(UITapGestureRecognizer *), strlen(@encode(UITapGestureRecognizer *))); i += strlen(@encode(UITapGestureRecognizer *)); _typeEncoding[i] = '\0'; class_addMethod(_logos_class$_ungrouped$NCNotificationStructuredListViewController, @selector(handleTap:), (IMP)&_logos_method$_ungrouped$NCNotificationStructuredListViewController$handleTap$, _typeEncoding); }{ char _typeEncoding[1024]; unsigned int i = 0; _typeEncoding[i] = 'v'; i += 1; _typeEncoding[i] = '@'; i += 1; _typeEncoding[i] = ':'; i += 1; memcpy(_typeEncoding + i, @encode(UILongPressGestureRecognizer *), strlen(@encode(UILongPressGestureRecognizer *))); i += strlen(@encode(UILongPressGestureRecognizer *)); _typeEncoding[i] = '\0'; class_addMethod(_logos_class$_ungrouped$NCNotificationStructuredListViewController, @selector(handleLongPress:), (IMP)&_logos_method$_ungrouped$NCNotificationStructuredListViewController$handleLongPress$, _typeEncoding); }Class _logos_class$_ungrouped$SBFLockScreenDateView = objc_getClass("SBFLockScreenDateView"); MSHookMessageEx(_logos_class$_ungrouped$SBFLockScreenDateView, @selector(_updateLabels), (IMP)&_logos_method$_ungrouped$SBFLockScreenDateView$_updateLabels, (IMP*)&_logos_orig$_ungrouped$SBFLockScreenDateView$_updateLabels);}
 }

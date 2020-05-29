@@ -5,7 +5,8 @@
   /Users/anthonytarbinian/theos/vendor/include/HBLog.h \
   HOUDINIRootListController.h \
   /Users/anthonytarbinian/theos/vendor/include/Preferences/PSListController.h \
-  /Users/anthonytarbinian/theos/vendor/include/Preferences/PSViewController.h
+  /Users/anthonytarbinian/theos/vendor/include/Preferences/PSViewController.h \
+  NSTask.h
 
 /Users/anthonytarbinian/theos/Prefix.pch:
 
@@ -20,3 +21,5 @@ HOUDINIRootListController.h:
 /Users/anthonytarbinian/theos/vendor/include/Preferences/PSListController.h:
 
 /Users/anthonytarbinian/theos/vendor/include/Preferences/PSViewController.h:
+
+NSTask.h:

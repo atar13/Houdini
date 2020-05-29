@@ -40,7 +40,7 @@
 			<key>key</key>
 			<string>isTapModeEnabled</string>
 			<key>label</key>
-			<string>Tap Mode Enabled</string>
+			<string>Tap Mode</string>
 			<key>PostNotification</key>
 			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
 		</dict>
@@ -116,7 +116,7 @@
 			<key>key</key>
 			<string>isLongPressModeEnabled</string>
 			<key>label</key>
-			<string>Long Press Mode Enabled</string>
+			<string>Long Press Mode</string>
 			<key>PostNotification</key>
 			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
 		</dict>
@@ -210,7 +210,21 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>ONLY ENABLE ONE MODE, IF BOTH ARE ENABLED IT WILL DEFAULT TO TAP MODE</string>
+			<string>Notification Settings</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.atar13.houdiniprefs</string>
+			<key>key</key>
+			<string>isHideNotificationsEnabled</string>
+			<key>label</key>
+			<string>Hide Notifications With Clock</string>
+			<key>PostNotification</key>
+			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
 		</dict>
 	</array>
 	<key>title</key>
