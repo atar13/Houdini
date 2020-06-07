@@ -7,6 +7,7 @@ houdiniprefs_INSTALL_PATH = /Library/PreferenceBundles
 houdiniprefs_FRAMEWORKS = UIKit
 houdiniprefs_PRIVATE_FRAMEWORKS = Preferences
 houdiniprefs_CFLAGS = -fobjc-arc
+houdiniprefs_EXTRA_FRAMEWORKS = Cephei CepheiPrefs
 
 include $(THEOS_MAKE_PATH)/bundle.mk
 

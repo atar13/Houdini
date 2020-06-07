@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSSegmentCell</string>
+			<key>label</key>
+			<string>Tap Control Mode</string>
+			<key>key</key>
+			<string>tapControlMode</string>
+			<key>default</key>
+			<string>toggle</string>
+			<key>defaults</key>
+			<string>com.atar13.houdiniprefs</string>
+			<key>validTitles</key>
+			<array>
+				<string>Toggle</string>
+				<string>Automatically Hide</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<string>toggle</string>
+				<string>automaticallyHide</string>
+			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string>Number of Taps</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>default</key>
+			<integer>2</integer>
+			<key>min</key>
+			<integer>1</integer>
+			<key>max</key>
+			<integer>3</integer>
+			<key>showValue</key>
+			<true/>
+			<key>isSegmented</key>
+			<true/>
+			<key>segmentCount</key>
+			<integer>2</integer>
+			<key>defaults</key>
+			<string>com.atar13.houdiniprefs</string>
+			<key>key</key>
+			<string>numberOfTaps</string>
+			<key>PostNotification</key>
+			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string>Number of Fingers Tapped</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>default</key>
+			<integer>1</integer>
+			<key>min</key>
+			<integer>1</integer>
+			<key>max</key>
+			<integer>3</integer>
+			<key>showValue</key>
+			<true/>
+			<key>isSegmented</key>
+			<true/>
+			<key>segmentCount</key>
+			<integer>2</integer>
+			<key>defaults</key>
+			<string>com.atar13.houdiniprefs</string>
+			<key>key</key>
+			<string>numberOfFingersTapped</string>
+			<key>PostNotification</key>
+			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
+		</dict>
+    </array>
+	<key>title</key>
+	<string>Tap</string>
+</dict>
+</plist>

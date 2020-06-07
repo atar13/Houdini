@@ -7,8 +7,10 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>Respring is needed to change number of fingers</string>
+			<key>footerText</key>
+			<string>Respring is needed for some settings</string>
+			<key>footerAlignment</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -27,78 +29,58 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSegmentCell</string>
+			<key>label</key>
+			<string>User Interaction Mode</string>
+			<key>key</key>
+			<string>userInteractionMode</string>
+			<key>default</key>
+			<string>tap</string>
+			<key>defaults</key>
+			<string>com.atar13.houdiniprefs</string>
+			<key>validTitles</key>
+			<array>
+				<string>Tap</string>
+				<string>Long Press</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<string>tap</string>
+				<string>longPress</string>
+			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>isController</key>
+			<true/>
+			<key>overridePrincipalClass</key>
+			<true/>
+			<key>label</key>
+			<string>Tap Configuration</string>
+			<key>detail</key>
+			<string>TapModeController</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>isController</key>
+			<true/>
+			<key>overridePrincipalClass</key>
+			<true/>
+			<key>label</key>
+			<string>Long Press Configuration</string>
+			<key>detail</key>
+			<string>LongPressModeController</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Tap Mode Settings</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<true/>
-			<key>defaults</key>
-			<string>com.atar13.houdiniprefs</string>
-			<key>key</key>
-			<string>isTapModeEnabled</string>
-			<key>label</key>
-			<string>Tap Mode</string>
-			<key>PostNotification</key>
-			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSStaticTextCell</string>
-			<key>label</key>
-			<string>Number of Taps</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSliderCell</string>
-			<key>default</key>
-			<integer>2</integer>
-			<key>min</key>
-			<integer>1</integer>
-			<key>max</key>
-			<integer>3</integer>
-			<key>showValue</key>
-			<true/>
-			<key>isSegmented</key>
-			<true/>
-			<key>segmentCount</key>
-			<integer>2</integer>
-			<key>defaults</key>
-			<string>com.atar13.houdiniprefs</string>
-			<key>key</key>
-			<string>numberOfTaps</string>
-			<key>PostNotification</key>
-			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSStaticTextCell</string>
-			<key>label</key>
-			<string>Number of Fingers Tapped</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSliderCell</string>
-			<key>default</key>
-			<integer>1</integer>
-			<key>min</key>
-			<integer>1</integer>
-			<key>max</key>
-			<integer>3</integer>
-			<key>showValue</key>
-			<true/>
-			<key>isSegmented</key>
-			<true/>
-			<key>segmentCount</key>
-			<integer>2</integer>
-			<key>defaults</key>
-			<string>com.atar13.houdiniprefs</string>
-			<key>key</key>
-			<string>numberOfFingersTapped</string>
-			<key>PostNotification</key>
-			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -108,109 +90,17 @@
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSSwitchCell</string>
-			<key>default</key>
-			<false/>
-			<key>defaults</key>
-			<string>com.atar13.houdiniprefs</string>
-			<key>key</key>
-			<string>isLongPressModeEnabled</string>
-			<key>label</key>
-			<string>Long Press Mode</string>
-			<key>PostNotification</key>
-			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSStaticTextCell</string>
-			<key>label</key>
-			<string>Long Press Duration (seconds)</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSliderCell</string>
-			<key>default</key>
-			<real>0.25</real>
-			<key>min</key>
-			<real>0.1</real>
-			<key>max</key>
-			<integer>2</integer>
-			<key>showValue</key>
-			<true/>
-			<key>isSegmented</key>
-			<false/>
-			<key>defaults</key>
-			<string>com.atar13.houdiniprefs</string>
-			<key>key</key>
-			<string>longPressDuration</string>
-			<key>PostNotification</key>
-			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSStaticTextCell</string>
-			<key>label</key>
-			<string>Number of Fingers Held</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSliderCell</string>
-			<key>default</key>
-			<integer>1</integer>
-			<key>min</key>
-			<integer>1</integer>
-			<key>max</key>
-			<integer>3</integer>
-			<key>showValue</key>
-			<true/>
-			<key>isSegmented</key>
-			<true/>
-			<key>segmentCount</key>
-			<integer>2</integer>
-			<key>defaults</key>
-			<string>com.atar13.houdiniprefs</string>
-			<key>key</key>
-			<string>numberOfFingersHeld</string>
-			<key>PostNotification</key>
-			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSStaticTextCell</string>
-			<key>label</key>
-			<string>Date/Time display timeout (seconds)</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSSliderCell</string>
-			<key>default</key>
-			<real>0.5</real>
-			<key>min</key>
-			<real>0.1</real>
-			<key>max</key>
-			<real>5</real>
-			<key>showValue</key>
-			<true/>
-			<key>isSegmented</key>
-			<false/>
-			<key>defaults</key>
-			<string>com.atar13.houdiniprefs</string>
-			<key>key</key>
-			<string>clockDisplayDuration</string>
-			<key>PostNotification</key>
-			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Also hides complications from the tweak Complications</string>
+			<key>footerAlignment</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>ONLY ENABLE ONE MODE, IF BOTH ARE ENABLED IT WILL DEFAULT TO TAP MODE</string>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>Notification Settings</string>
+			<string>Additional Settings</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -222,9 +112,59 @@
 			<key>key</key>
 			<string>isHideNotificationsEnabled</string>
 			<key>label</key>
-			<string>Hide Notifications With Clock</string>
+			<string>Hide Notifications and Media Player</string>
 			<key>PostNotification</key>
 			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Contact</string>
+		</dict>
+		<dict>
+    		<key>big</key>
+   			 <true/>
+			<key>cellClass</key>
+			<string>HBTwitterCell</string>
+			<key>height</key>
+			<integer>56</integer>
+			<key>label</key>
+			<string>Anthony Tarbinian</string>
+			<key>user</key>
+			<string>atar137h</string>
+			<key>action</key>
+			<string>twitter</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Reddit</string>
+			<key>action</key>
+			<string>reddit</string>
+			<key>icon</key>
+			<string>redditIcon</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Email</string>
+			<key>action</key>
+			<string>email</string>
+			<key>icon</key>
+			<string>emailIcon</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Source Code</string>
+			<key>action</key>
+			<string>github</string>
+			<key>icon</key>
+			<string>githubIcon</string>
 		</dict>
 	</array>
 	<key>title</key>
