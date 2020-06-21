@@ -1,5 +1,5 @@
 export ARCHS = arm64 arm64e
-export SDKVERSION = 11.2
+export SDKVERSION = 13.3
 
 INSTALL_TARGET_PROCESSES = SpringBoard
 

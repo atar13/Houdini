@@ -1,7 +1,8 @@
 #import <Cephei/HBPreferences.h>
 
-
 //TODO:
+//hide when phone is locked
+//alert to respring when a setting is changed
 //TIMER
 //maybe an option for which areas to tap on
 //number of taps : DONE
@@ -14,6 +15,35 @@
 //change prefs from Cephei to something else idk : not happening for a while
 //add cephei package info cell
 //add cephei twitter info cell : DONE
+
+@interface SBFLockScreenDateViewController : UIViewController
+-(void)_updateView;
+@property (assign,nonatomic) BOOL screenOff;    
+@end
+
+@interface SBFLockScreenDateView : UIView
+@property (assign,getter=isSubtitleHidden,nonatomic) BOOL subtitleHidden;
+@end
+
+//handles hiding 
+@interface NCNotificationStructuredListViewController : UIViewController
+@property (nonatomic, assign, readwrite) UIScrollView *scrollView;
+-(void)hideDateAfterDelay;
+@end
+
+//handles hiding elements after scrolling
+@interface NCNotificationListView : UIScrollView
+@end
+
+@interface CSQuickActionsViewController : UIViewController
+@end
+
+@interface CSTeachableMomentsContainerViewController : UIViewController
+-(id)view;
+@end
+
+@interface CSCoverSheetViewBaseController
+@end
 
 HBPreferences *prefs;
 
@@ -39,35 +69,104 @@ BOOL dateIsHidden = FALSE;
 NSTimer *longPressTimer = nil;
 double clockDisplayDuration;
 
+BOOL isHideOnScreenLockEnabled;
+
 BOOL isHideNotificationsEnabled;
+
+BOOL isHideQuickActionsEnabled;
+
+BOOL isHideUnlockTextEnabled;
 
 BOOL areNotifsTracking;
 BOOL areNotifsDragging;
 
 NSTimer *stoppedScrollingTimer = nil;
 
-%group iOS13
-//clock vc that creates the instance variable and starts timer when the view gets updated and the user just long pressed
-@interface SBFLockScreenDateViewController : UIViewController
--(void)_updateView;
-@end
-
 SBFLockScreenDateViewController *timeVC;
 
+NCNotificationStructuredListViewController *notifVC;
+
+UIViewController *actionsVC;
+UIViewController *unlockVC;
+
+
+
+// UIViewController *simpleLSVC;
+
+// @interface SLSDateViewController : UIViewController
+
+// -(id)sharedInstance;
+// @end
+// %hook SLSDateViewController 
+
+// 	-(void) viewDidLoad{
+// 		simpleLSVC = (UIViewController *)self;
+
+// 		%orig;
+// 		// self.view.hidden = TRUE;
+	
+// 	}
+// %end
+
+//clock vc that creates the instance variable and starts timer when the view gets updated and the user just long pressed
+
+void hide(){
+	dateIsHidden = TRUE;
+	[timeVC _updateView];
+	if(isHideNotificationsEnabled){
+		notifVC.scrollView.hidden = TRUE;
+	}
+	if(isHideQuickActionsEnabled){
+		actionsVC.view.hidden = TRUE;
+	}
+	if(isHideUnlockTextEnabled){
+		unlockVC.view.hidden = TRUE;
+	}
+}
+
+void show(){
+	dateIsHidden = FALSE;
+	[timeVC _updateView];
+	if(isHideNotificationsEnabled){
+		notifVC.scrollView.hidden=FALSE;
+	}
+	if(isHideQuickActionsEnabled){
+		actionsVC.view.hidden = FALSE;
+	}
+	if(isHideUnlockTextEnabled){
+		unlockVC.view.hidden = FALSE;
+	}
+}
+
 %hook SBFLockScreenDateViewController
+
+
+	-(void)setScreenOff:(BOOL)arg1 {
+
+			%orig;
+			if(isEnabled&&firstTimeHide){
+				hide();
+				firstTimeHide = FALSE;
+			}
+			if(isEnabled&&isHideOnScreenLockEnabled){
+			if(arg1){
+			hide();
+			}
+			}
+		}
 
 	-(void)viewDidLoad{
 		%orig;
 		timeVC = (SBFLockScreenDateViewController *)self;
-	}
+		// hide();
+		if(self.screenOff){
 
+		}
+	}
 
 %end
 
 //hides the clock/date 
-@interface SBFLockScreenDateView : UIView
-@property (assign,getter=isSubtitleHidden,nonatomic) BOOL subtitleHidden;
-@end
 
 %hook SBFLockScreenDateView
 
@@ -90,93 +189,36 @@ SBFLockScreenDateViewController *timeVC;
 }
 
 %end
-%end
 
 
-%group iOS12
-
-@interface SBLockScreenDateViewController : UIViewController
--(void)_updateView;
-// @property (assign,getter=isSubtitleHidden,nonatomic) BOOL subtitleHidden;
-@end
-
-SBLockScreenDateViewController *ios12TimeVC;
-
-%hook SBLockScreenDateViewController
-
-	-(void)viewDidLoad{
-		%orig;
-		ios12TimeVC = (SBLockScreenDateViewController *)self;
-
-	}
-
-	-(void)_updateView{
-	if(isEnabled){
-	%orig;
-		//check if area is tapped
-		if(dateIsHidden){
-			// self.view.subtitleHidden = TRUE;
-			self.view.hidden = TRUE;
-		}else{
-			// self.view.subtitleHidden = FALSE;
-			self.view.hidden = FALSE;
-		}
-	}
-	else{
-		%orig;
-	}
-	}
 
 
-%end
-%end
-
-
-//mabye add code that will hide notifs the first time the tweak is run
 //handles the tap/long press gestures
-@interface NCNotificationStructuredListViewController : UIViewController
-@property (nonatomic, assign, readwrite) UIScrollView *scrollView;
--(void)hideDateAfterDelay;
-@end
-
-NCNotificationStructuredListViewController *notifVC;
-
 %hook NCNotificationStructuredListViewController
 
--(void)viewWillAppear {
-	// notifVC.scrollView.hidden = TRUE;
-
-	%orig;
-// 	if(isHideNotificationsEnabled){
-// 		// dateIsHidden = TRUE;	
-// // 		if(kCFCoreFoundationVersionNumber>1655){
-// // 	[timeVC _updateView];
-// // }else{
-// // 	[ios12TimeVC _updateView];
-// // }
-// 		notifVC.scrollView.hidden = TRUE;
-// 		// firstTimeHide = FALSE;
-// 	}
-}
-
+// -(void)viewWillDissapear {
+// 	%orig;
+// 	HBLogWarn(@"screenlockedrn");
+// }
 -(void)viewDidLoad {
 	notifVC = (NCNotificationStructuredListViewController *)self;
 	 UIViewController *_self = (UIViewController *)self;
 
 if(isEnabled){
-	if(firstTimeHide){
-		dateIsHidden = TRUE;	
-		if(kCFCoreFoundationVersionNumber>1655){
-	[timeVC _updateView];
-}else{
-	[ios12TimeVC _updateView];
-}
-		if(isHideNotificationsEnabled){
-			notifVC.scrollView.hidden = TRUE;
-		}
-		// [self hideDateAfterDelay];
-		firstTimeHide = FALSE;
-	}
+
+	// if(firstTimeHide){
+	// 	dateIsHidden = TRUE;	
+	// 	if(kCFCoreFoundationVersionNumber>1655){
+	// 	[timeVC _updateView];
+	// 	}else{
+	// 		ios12TimeVC.view.hidden = TRUE;
+	// 	}
+	// 	if(isHideNotificationsEnabled){
+	// 		notifVC.scrollView.hidden = TRUE;
+	// 		// HBLogWarn(@"firsttimehide");
+	// 	}
+	// firstTimeHide = FALSE;
+	// }
 
 	if([userInteractionMode isEqualToString:@"tap"]){
 		%orig;
@@ -206,48 +248,21 @@ else{
 
 %new
 -(void)handleTap:(UITapGestureRecognizer *)sender{
-	NSString *iosVersion = [NSString stringWithFormat:@"%f", kCFCoreFoundationVersionNumber];
 
-	HBLogWarn(@"iosVersion %@",iosVersion);
 	if([tapControlMode isEqualToString:@"toggle"]){
 	if(!dateIsHidden){
-		dateIsHidden = TRUE;	
-		if(kCFCoreFoundationVersionNumber>1655){
-	[timeVC _updateView];
+		hide();
 	}else{
-	[ios12TimeVC _updateView];
-	}
-		if(isHideNotificationsEnabled){
-			notifVC.scrollView.hidden = TRUE;
-		}
-	}else{
-		dateIsHidden = FALSE;
-		if(kCFCoreFoundationVersionNumber>1655){
-			[timeVC _updateView];
-		}else{
-			[ios12TimeVC _updateView];
-		}
-		if(isHideNotificationsEnabled){
-			notifVC.scrollView.hidden=FALSE;
-		}
+		show();	
 	}
 	}
 	else if([tapControlMode isEqualToString:@"automaticallyHide"]){
-		HBLogWarn(@"taptimer");
 
 	if(!dateIsHidden){
 
 	}else{
 	
-		dateIsHidden = FALSE;
-		if(kCFCoreFoundationVersionNumber>1655){
-	[timeVC _updateView];
-}else{
-	[ios12TimeVC _updateView];
-}
-		if(isHideNotificationsEnabled){
-			notifVC.scrollView.hidden = FALSE;
-		}
+		show();
 
 	 	//credits to NoisyFlake for the timer code and getting it to run in the main thread
 		//https://github.com/NoisyFlake/OhMyFlash
@@ -257,7 +272,6 @@ else{
 										selector:@selector(hideDateAfterDelay)
 										userInfo:nil
 										repeats:NO];	
-
 		});
 	}
 	}
@@ -268,78 +282,18 @@ else{
 
 %new
 -(void)hideDateAfterDelay{
-	dateIsHidden = TRUE;
-	if(kCFCoreFoundationVersionNumber>1655){
-	[timeVC _updateView];
-}else{
-	[ios12TimeVC _updateView];
-}
-	if(isHideNotificationsEnabled){
-		notifVC.scrollView.hidden = TRUE;
-	}
+	hide();
 }
 
-%new 
--(void)doNothing{
-
-}
 
 %new
 -(void)handleLongPress:(UILongPressGestureRecognizer *)sender{
 
-// if([longPressControlMode isEqualToString:@"toggle"]){
-	// if(!dateIsHidden){
-	// 	dateIsHidden = TRUE;	
-	// 	if(kCFCoreFoundationVersionNumber>1655){
-	// 		[timeVC _updateView];
-	// 	}else{
-	// 		[ios12TimeVC _updateView];
-	// 	}
-	// 	if(isHideNotificationsEnabled){
-	// 		notifVC.scrollView.hidden = TRUE;
-	// 	}
-	// 	dispatch_async(dispatch_get_main_queue(), ^{
-	// 		longPressTimer = [NSTimer scheduledTimerWithTimeInterval:2
-	// 									target:self
-	// 									selector:@selector(hideDateAfterDelay)
-	// 									userInfo:nil
-	// 									repeats:NO];	
 
-	// 	});
-	// 	}else{
-	// 		dateIsHidden = FALSE;
-	// 	if(kCFCoreFoundationVersionNumber>1655){
-	// 		[timeVC _updateView];
-	// 	}else{
-	// 		[ios12TimeVC _updateView];
-	// 	}
-	// 	if(isHideNotificationsEnabled){
-	// 		notifVC.scrollView.hidden=FALSE;
-	// 	}
-	// 	dispatch_async(dispatch_get_main_queue(), ^{
-	// 		longPressTimer = [NSTimer scheduledTimerWithTimeInterval:2
-	// 									target:self
-	// 									selector:@selector(doNothing)
-	// 									userInfo:nil
-	// 									repeats:NO];	
-
-	// 	});
-	// }
-// }
-// else if([longPressControlMode isEqualToString:@"automaticallyHide"]){
 	if(!dateIsHidden){
 
 	}else{
-		dateIsHidden = FALSE;
-		if(kCFCoreFoundationVersionNumber>1655){
-	[timeVC _updateView];
-}else{
-	[ios12TimeVC _updateView];
-}
-		if(isHideNotificationsEnabled){
-			notifVC.scrollView.hidden = FALSE;
-		}
-
+		show();
 	 	//credits to NoisyFlake for the timer code and getting it to run in the main thread
 		//https://github.com/NoisyFlake/OhMyFlash
 		dispatch_async(dispatch_get_main_queue(), ^{
@@ -351,18 +305,12 @@ else{
 
 		});
 	}
-// }
-// else{
-
-// }
 }
 
 %end
 
 
-
-@interface NCNotificationListView : UIScrollView
-@end
+//add if the control mode is automaticallyhide too
 
 //SBLockScreenDateViewController
 %hook NCNotificationListView
@@ -375,7 +323,7 @@ else{
 -(void)_trackingDidBegin{
 	%orig;
 	// HBLogWarn(@"StringMode %@", userInteractionMode);
-	if(isHideNotificationsEnabled&&[userInteractionMode isEqualToString:@"longPress"]){
+	if(isEnabled&&isHideNotificationsEnabled&&([longPressControlMode isEqualToString:@"automaticallyHide"]||[tapControlMode isEqualToString:@"automaticallyHide"])){
 	[longPressTimer invalidate];
 	
 	dispatch_async(dispatch_get_main_queue(), ^{
@@ -392,9 +340,9 @@ else{
 //hides the notifs once the user stops scrolling
 -(void)_scrollViewDidEndDecelerating{
 	%orig;
-	if(isHideNotificationsEnabled&&[userInteractionMode isEqualToString:@"longPress"]){
+	if(isEnabled&&isHideNotificationsEnabled&&([longPressControlMode isEqualToString:@"automaticallyHide"]||[tapControlMode isEqualToString:@"automaticallyHide"])){
 	dispatch_async(dispatch_get_main_queue(), ^{
-			stoppedScrollingTimer = [NSTimer scheduledTimerWithTimeInterval:2
+			stoppedScrollingTimer = [NSTimer scheduledTimerWithTimeInterval:clockDisplayDuration
 										target:self
 										selector:@selector(hideNotifsAfterScrollingEnds)
 										userInfo:nil
@@ -414,18 +362,29 @@ else{
 
 
 
-// %hook CSQuickActionView
 
-// -(void)
+%hook CSQuickActionsViewController
 
-// %end
+-(void)viewDidLoad {
+    actionsVC = (UIViewController *)self;
+	%orig;
+
+}
+
+%end
 
 
 
+%hook CSTeachableMomentsContainerViewController
 
+-(void)viewDidLoad{
+	unlockVC = (UIViewController *)self;
+	// unlockVC.view.hidden = FALSE;
+	%orig;
+	// unlockVC.view.hidden = true;
 
-
-
+}
+%end
 
 
 void updateSettings(){
@@ -444,7 +403,15 @@ void updateSettings(){
 	[prefs registerDouble:&longPressDuration default:0.5 forKey:@"longPressDuration"];
 	[prefs registerDouble:&clockDisplayDuration default:0.5 forKey:@"clockDisplayDuration"];
 
+	[prefs registerBool:&isHideOnScreenLockEnabled default:FALSE forKey:@"isHideOnScreenLockEnabled"];
+
 	[prefs registerBool:&isHideNotificationsEnabled default:FALSE forKey:@"isHideNotificationsEnabled"];
+
+	[prefs registerBool:&isHideQuickActionsEnabled default:FALSE forKey:@"isHideQuickActionsEnabled"];
+
+	// [prefs registerBool:&isSimpleLS2CompatibilityEnabled default:FALSE forKey:@"isSimpleLS2CompatibilityEnabled"];
+
+	[prefs registerBool:&isHideUnlockTextEnabled default:FALSE forKey:@"isHideUnlockTextEnabled"];
 	
 }
 
@@ -456,13 +423,12 @@ void updateSettings(){
 	updateSettings();
 	// CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)updateSettings, CFSTR("com.atar13.houdini/updateSettings"), NULL, kNilOptions);	
 	// HBLogWarn(@"StringMode %@", mode);
-	if(kCFCoreFoundationVersionNumber>1665){
-		%init(iOS13);
-	}else{
-		%init(iOS12);
-	}
+	// if(kCFCoreFoundationVersionNumber>1665){
+	// 	%init(iOS13);
+	// }else{
+	// 	%init(iOS12);
+	// }
 	%init;
-
 }
 
 

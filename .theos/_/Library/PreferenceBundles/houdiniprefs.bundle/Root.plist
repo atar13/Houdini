@@ -80,13 +80,25 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Tap Mode Settings</string>
+			<string>Additional Settings</string>
+			<key>footerText</key>
+			<string>Hides all lock screen elements that normally hide upon tap/hold</string>
+			<key>footerAlignment</key>
+			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>cell</key>
-			<string>PSGroupCell</string>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.atar13.houdiniprefs</string>
+			<key>key</key>
+			<string>isHideOnScreenLockEnabled</string>
 			<key>label</key>
-			<string>Long Press Mode Settings</string>
+			<string>Hide on Screen Lock</string>
+			<key>PostNotification</key>
+			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -95,12 +107,6 @@
 			<string>Also hides complications from the tweak Complications</string>
 			<key>footerAlignment</key>
 			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>Additional Settings</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -113,6 +119,42 @@
 			<string>isHideNotificationsEnabled</string>
 			<key>label</key>
 			<string>Hide Notifications and Media Player</string>
+			<key>PostNotification</key>
+			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Only hide quick actions on iPhone X and higher</string>
+			<key>footerAlignment</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.atar13.houdiniprefs</string>
+			<key>key</key>
+			<string>isHideUnlockTextEnabled</string>
+			<key>label</key>
+			<string>Hide Unlock Text</string>
+			<key>PostNotification</key>
+			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.atar13.houdiniprefs</string>
+			<key>key</key>
+			<string>isHideQuickActionsEnabled</string>
+			<key>label</key>
+			<string>Hide Quick Action Toggles</string>
 			<key>PostNotification</key>
 			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
 		</dict>
