@@ -29,6 +29,7 @@
 @interface NCNotificationStructuredListViewController : UIViewController
 @property (nonatomic, assign, readwrite) UIScrollView *scrollView;
 -(void)hideDateAfterDelay;
+-(void)viewDidAppear:(BOOL)arg1;
 @end
 
 //handles hiding elements after scrolling
@@ -155,10 +156,10 @@ void show(){
 	-(void)setScreenOff:(BOOL)arg1 {
 
 			%orig;
-			if(isEnabled&&firstTimeHide){
-				hide();
-				firstTimeHide = FALSE;
-			}
+			// if(isEnabled&&firstTimeHide){
+			// 	hide();
+			// 	firstTimeHide = FALSE;
+			// }
 			if(isEnabled&&isHideOnScreenLockEnabled){
 			if(arg1){
 			hide();
@@ -211,6 +212,17 @@ void show(){
 // 	%orig;
 // 	HBLogWarn(@"screenlockedrn");
 // }
+
+-(void)viewDidAppear:(BOOL)arg1{
+	%orig;
+	if(arg1){
+		if(isEnabled&&firstTimeHide){
+			hide();
+			firstTimeHide = FALSE;
+		}
+	}
+}
+
 -(void)viewDidLoad {
 	notifVC = (NCNotificationStructuredListViewController *)self;
 	 UIViewController *_self = (UIViewController *)self;
@@ -439,10 +451,9 @@ void updateSettings(){
 
 
 
-%ctor {
+%ctor {	
 	prefs= [[HBPreferences alloc] initWithIdentifier:@"com.atar13.houdiniprefs"];
 	updateSettings();
-	// CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)updateSettings, CFSTR("com.atar13.houdini/updateSettings"), NULL, kNilOptions);	
 	// HBLogWarn(@"StringMode %@", mode);
 	// if(kCFCoreFoundationVersionNumber>1665){
 	// 	%init(iOS13);
