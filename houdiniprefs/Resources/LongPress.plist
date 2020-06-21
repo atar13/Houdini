@@ -6,14 +6,6 @@
 	<array>
 		<dict>
 			<key>cell</key>
-			<string>PSGroupCell</string>
-			<key>footerText</key>
-			<string>NOTE: In automatic hide mode, after a respringlockscreen elements wont be hidden until you lock the screen and wake it once.</string>
-			<key>footerAlignment</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>cell</key>
 			<string>PSSegmentCell</string>
 			<key>label</key>
 			<string>Long Press Control Mode</string>
