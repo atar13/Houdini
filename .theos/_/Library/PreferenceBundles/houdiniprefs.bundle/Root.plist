@@ -126,7 +126,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Only hide quick actions on iPhone X and higher</string>
+			<string>Only hide quick actions and FaceID lock on iPhone X and higher</string>
 			<key>footerAlignment</key>
 			<integer>0</integer>
 		</dict>
@@ -155,6 +155,20 @@
 			<string>isHideQuickActionsEnabled</string>
 			<key>label</key>
 			<string>Hide Quick Action Toggles</string>
+			<key>PostNotification</key>
+			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.atar13.houdiniprefs</string>
+			<key>key</key>
+			<string>isHideFaceIDEnabled</string>
+			<key>label</key>
+			<string>Hide FaceID Lock</string>
 			<key>PostNotification</key>
 			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
 		</dict>

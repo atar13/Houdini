@@ -7,7 +7,7 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = Houdini
 
-Houdini_FILES = Tweak.x
+Houdini_FILES = Houdini.x
 Houdini_CFLAGS = -fobjc-arc
 Houdini_EXTRA_FRAMEWORKS += Cephei
 

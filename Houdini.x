@@ -45,6 +45,9 @@
 @interface CSCoverSheetViewBaseController
 @end
 
+@interface SBUIProudLockContainerViewController : UIViewController
+@end
+
 HBPreferences *prefs;
 
 BOOL isEnabled;
@@ -77,6 +80,8 @@ BOOL isHideQuickActionsEnabled;
 
 BOOL isHideUnlockTextEnabled;
 
+BOOL isHideFaceIDEnabled;
+
 BOOL areNotifsTracking;
 BOOL areNotifsDragging;
 
@@ -88,7 +93,7 @@ NCNotificationStructuredListViewController *notifVC;
 
 UIViewController *actionsVC;
 UIViewController *unlockVC;
-
+UIViewController *faceidVC;
 
 
 // UIViewController *simpleLSVC;
@@ -122,6 +127,9 @@ void hide(){
 	if(isHideUnlockTextEnabled){
 		unlockVC.view.hidden = TRUE;
 	}
+	if(isHideFaceIDEnabled){
+		faceidVC.view.hidden = TRUE;
+	}
 }
 
 void show(){
@@ -135,6 +143,9 @@ void show(){
 	}
 	if(isHideUnlockTextEnabled){
 		unlockVC.view.hidden = FALSE;
+	}
+	if(isHideFaceIDEnabled){
+		faceidVC.view.hidden = FALSE;
 	}
 }
 
@@ -379,13 +390,21 @@ else{
 
 -(void)viewDidLoad{
 	unlockVC = (UIViewController *)self;
-	// unlockVC.view.hidden = FALSE;
 	%orig;
-	// unlockVC.view.hidden = true;
 
 }
 %end
 
+
+%hook SBUIProudLockContainerViewController
+
+-(void)viewDidLoad{
+	faceidVC = (UIViewController *)self;
+	%orig;
+
+	// faceidVC.view.hidden = TRUE;
+}
+%end
 
 void updateSettings(){
 	[prefs registerBool:&isEnabled default:TRUE forKey:@"isEnabled"];
@@ -412,6 +431,8 @@ void updateSettings(){
 	// [prefs registerBool:&isSimpleLS2CompatibilityEnabled default:FALSE forKey:@"isSimpleLS2CompatibilityEnabled"];
 
 	[prefs registerBool:&isHideUnlockTextEnabled default:FALSE forKey:@"isHideUnlockTextEnabled"];
+
+	[prefs registerBool:&isHideFaceIDEnabled default:FALSE forKey:@"isHideFaceIDEnabled"];
 	
 }
 
