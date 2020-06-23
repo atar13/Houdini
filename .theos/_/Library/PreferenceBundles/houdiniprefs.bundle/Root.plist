@@ -78,6 +78,32 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSStaticTextCell</string>
+			<key>label</key>
+			<string>Automatic mode display timeout (seconds)</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>default</key>
+			<real>0.5</real>
+			<key>min</key>
+			<real>0.1</real>
+			<key>max</key>
+			<real>10</real>
+			<key>showValue</key>
+			<true/>
+			<key>isSegmented</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.atar13.houdiniprefs</string>
+			<key>key</key>
+			<string>clockDisplayDuration</string>
+			<key>PostNotification</key>
+			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
 			<string>Additional Settings</string>

@@ -3,7 +3,6 @@
 #import <Cephei/HBPreferences.h>
 
 @interface HOUDINIRootListController : PSListController
-
 @end
 
 

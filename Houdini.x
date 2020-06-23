@@ -120,7 +120,10 @@ void hide(){
 	dateIsHidden = TRUE;
 	[timeVC _updateView];
 	if(isHideNotificationsEnabled){
-		notifVC.scrollView.hidden = TRUE;
+		notifVC.scrollView.hidden = TRUE; 
+		// for(int i = 1; i>=0; i+=0.1){
+		// 	notifVC.scrollView.alpha = i;
+		// }
 	}
 	if(isHideQuickActionsEnabled){
 		actionsVC.view.hidden = TRUE;
@@ -171,9 +174,6 @@ void show(){
 		%orig;
 		timeVC = (SBFLockScreenDateViewController *)self;
 		// hide();
-		if(self.screenOff){
-
-		}
 	}
 
 %end
