@@ -6,21 +6,31 @@
 	<array>
 		<dict>
 			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>While in toggle mode, if you hold down for too long, the lock screen elements may toggle a second time.</string>
+			<key>footerAlignment</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSSegmentCell</string>
 			<key>label</key>
 			<string>Long Press Control Mode</string>
 			<key>key</key>
 			<string>longPressControlMode</string>
 			<key>default</key>
-			<string>toggle</string>
+			<string>automaticallyHide</string>
 			<key>defaults</key>
 			<string>com.atar13.houdiniprefs</string>
 			<key>validTitles</key>
 			<array>
+				<string>Toggle</string>
 				<string>Automatically Hide</string>
 			</array>
 			<key>validValues</key>
 			<array>
+				<string>toggle</string>
 				<string>automaticallyHide</string>
 			</array>
 		</dict>

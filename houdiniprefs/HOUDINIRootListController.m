@@ -3,6 +3,7 @@
 #import <spawn.h>
 #import "NSTask.h"
 
+
 @implementation HOUDINIRootListController
 
 
@@ -71,7 +72,14 @@
 
 @end
 
+
 @implementation TapModeController
+
+-(void)respring {
+	pid_t pid;
+	const char* args[] = {"killall", "-9", "backboardd", NULL};
+	posix_spawn(&pid, "/usr/bin/killall", NULL, NULL, (char* const*)args, NULL);
+}
 
 - (NSArray *)specifiers {
 	if (!_specifiers) {
@@ -89,6 +97,12 @@
 @end
 
 @implementation LongPressModeController
+
+-(void)respring {
+	pid_t pid;
+	const char* args[] = {"killall", "-9", "backboardd", NULL};
+	posix_spawn(&pid, "/usr/bin/killall", NULL, NULL, (char* const*)args, NULL);
+}
 
 - (NSArray *)specifiers {
 	if (!_specifiers) {

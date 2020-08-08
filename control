@@ -1,5 +1,5 @@
 Package: com.atar13.houdini
-Version: 1.1
+Version: 1.2
 Architecture: iphoneos-arm
 Maintainer: atar13 <atar13dev@gmail.com>
 Depends: mobilesubstrate, preferenceloader, ws.hbang.common

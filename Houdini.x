@@ -44,9 +44,18 @@
 @end
 
 @interface CSCoverSheetViewBaseController
+-(void)pressEnded;
 @end
 
 @interface SBUIProudLockContainerViewController : UIViewController
+@end
+
+
+@interface UIUserInterfaceStyleArbiter : NSObject {
+	long long _currentStyle;
+}
++ (id)sharedInstance;
+- (long long)currentStyle;
 @end
 
 HBPreferences *prefs;
@@ -95,63 +104,58 @@ NCNotificationStructuredListViewController *notifVC;
 UIViewController *actionsVC;
 UIViewController *unlockVC;
 UIViewController *faceidVC;
+UIView *dateView;
 
-
-// UIViewController *simpleLSVC;
-
-// @interface SLSDateViewController : UIViewController
-
-// -(id)sharedInstance;
-// @end
-// %hook SLSDateViewController 
-
-// 	-(void) viewDidLoad{
-// 		simpleLSVC = (UIViewController *)self;
-
-// 		%orig;
-// 		// self.view.hidden = TRUE;
-	
-// 	}
-// %end
-
-//clock vc that creates the instance variable and starts timer when the view gets updated and the user just long pressed
 
 void hide(){
-	dateIsHidden = TRUE;
-	[timeVC _updateView];
-	if(isHideNotificationsEnabled){
-		notifVC.scrollView.hidden = TRUE; 
-		// for(int i = 1; i>=0; i+=0.1){
-		// 	notifVC.scrollView.alpha = i;
-		// }
-	}
-	if(isHideQuickActionsEnabled){
-		actionsVC.view.hidden = TRUE;
-	}
-	if(isHideUnlockTextEnabled){
-		unlockVC.view.hidden = TRUE;
-	}
-	if(isHideFaceIDEnabled){
-		faceidVC.view.hidden = TRUE;
+	if(isEnabled){
+		dateIsHidden = TRUE;
+		[timeVC _updateView];
+		if(isHideNotificationsEnabled){
+			notifVC.scrollView.hidden = TRUE; 
+			// for(int i = 1; i>=0; i+=0.1){
+			// 	notifVC.scrollView.alpha = i;
+			// }
+		}
+		if(isHideQuickActionsEnabled){
+			actionsVC.view.hidden = TRUE;
+		}
+		if(isHideUnlockTextEnabled){
+			unlockVC.view.hidden = TRUE;
+		}
+		if(isHideFaceIDEnabled){
+			faceidVC.view.hidden = TRUE;
+		}
 	}
 }
 
 void show(){
-	dateIsHidden = FALSE;
-	[timeVC _updateView];
-	if(isHideNotificationsEnabled){
-		notifVC.scrollView.hidden=FALSE;
-	}
-	if(isHideQuickActionsEnabled){
-		actionsVC.view.hidden = FALSE;
-	}
-	if(isHideUnlockTextEnabled){
-		unlockVC.view.hidden = FALSE;
-	}
-	if(isHideFaceIDEnabled){
-		faceidVC.view.hidden = FALSE;
+	if(isEnabled){
+		dateIsHidden = FALSE;
+		[timeVC _updateView];
+		if(isHideNotificationsEnabled){
+			notifVC.scrollView.hidden=FALSE;
+		}
+		if(isHideQuickActionsEnabled){
+			actionsVC.view.hidden = FALSE;
+		}
+		if(isHideUnlockTextEnabled){
+			unlockVC.view.hidden = FALSE;
+		}
+		if(isHideFaceIDEnabled){
+			faceidVC.view.hidden = FALSE;
+		}
 	}
 }
+BOOL areElementsHidden = TRUE;
+NSTimer *prepareLongPressToggleToBeShownTimer = nil;
+// UIUserInterfaceStyleArbiter *modeStyleArbiter;
+// long long style;
+// NSString *styleString;
+
+
+
+
 
 %hook SBFLockScreenDateViewController
 
@@ -163,10 +167,13 @@ void show(){
 			// 	hide();
 			// 	firstTimeHide = FALSE;
 			// }
-			if(isEnabled&&isHideOnScreenLockEnabled){
-			if(arg1){
-			hide();
-			}
+			if(isEnabled){
+				areElementsHidden = TRUE;
+				if(isHideOnScreenLockEnabled){
+					if(arg1){
+						hide();
+					}
+				}
 			}
 		}
 
@@ -180,11 +187,13 @@ void show(){
 
 //hides the clock/date 
 
+
 %hook SBFLockScreenDateView
 
 -(void)_updateLabels{
 
-	if(isEnabled){
+	if(isEnabled){ 
+	dateView = (UIView *)self;
 	%orig;
 		//check if area is tapped
 		if(dateIsHidden){
@@ -205,7 +214,6 @@ void show(){
 
 
 
-//handles the tap/long press gestures
 %hook NCNotificationStructuredListViewController
 
 // -(void)viewWillDissapear {
@@ -224,113 +232,165 @@ void show(){
 }
 
 -(void)viewDidLoad {
-	notifVC = (NCNotificationStructuredListViewController *)self;
-	 UIViewController *_self = (UIViewController *)self;
-
-if(isEnabled){
-
-	// if(firstTimeHide){
-	// 	dateIsHidden = TRUE;	
-	// 	if(kCFCoreFoundationVersionNumber>1655){
-	// 	[timeVC _updateView];
-	// 	}else{
-	// 		ios12TimeVC.view.hidden = TRUE;
-	// 	}
-	// 	if(isHideNotificationsEnabled){
-	// 		notifVC.scrollView.hidden = TRUE;
-	// 		// HBLogWarn(@"firsttimehide");
-	// 	}
-	// firstTimeHide = FALSE;
-	// }
-
-	if([userInteractionMode isEqualToString:@"tap"]){
-		%orig;
-		UITapGestureRecognizer *tapPress =  [[UITapGestureRecognizer alloc] initWithTarget:_self action:@selector(handleTap:)];
-		tapPress.numberOfTapsRequired = (int)numberOfTaps;
-		tapPress.numberOfTouchesRequired = (int)numberOfFingersTapped;
-		[_self.view addGestureRecognizer:tapPress];
-		// _self.userInteractionEnabled = TRUE;
-	}else if([userInteractionMode isEqualToString:@"longPress"]){
-		%orig;
-		UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:_self action:@selector(handleLongPress:)];
-		longPress.minimumPressDuration = longPressDuration;
-		longPress.numberOfTouchesRequired = (int)numberOfFingersHeld;
-		longPress.allowableMovement = allowableMovement;
-		[_self.view addGestureRecognizer: longPress];
-	}
-	else{
-		%orig;
-	}
-}
-else{
 	%orig;
-}
+	notifVC = (NCNotificationStructuredListViewController *)self;
+	//  UIViewController *_self = (UIViewController *)self;
 
-}
-
-
-%new
--(void)handleTap:(UITapGestureRecognizer *)sender{
-
-	if([tapControlMode isEqualToString:@"toggle"]){
-	if(!dateIsHidden){
-		hide();
-	}else{
-		show();	
-	}
-	}
-	else if([tapControlMode isEqualToString:@"automaticallyHide"]){
-
-	if(!dateIsHidden){
-
-	}else{
-	
-		show();
-
-	 	//credits to NoisyFlake for the timer code and getting it to run in the main thread
-		//https://github.com/NoisyFlake/OhMyFlash
-		dispatch_async(dispatch_get_main_queue(), ^{
-			longPressTimer = [NSTimer scheduledTimerWithTimeInterval:clockDisplayDuration
-										target:self
-										selector:@selector(hideDateAfterDelay)
-										userInfo:nil
-										repeats:NO];	
-		});
-	}
-	}
-	else{
-
-	}
-}
-
-%new
--(void)hideDateAfterDelay{
-	hide();
-}
-
-
-%new
--(void)handleLongPress:(UILongPressGestureRecognizer *)sender{
-
-
-	if(!dateIsHidden){
-
-	}else{
-		show();
-	 	//credits to NoisyFlake for the timer code and getting it to run in the main thread
-		//https://github.com/NoisyFlake/OhMyFlash
-		dispatch_async(dispatch_get_main_queue(), ^{
-			longPressTimer = [NSTimer scheduledTimerWithTimeInterval:clockDisplayDuration
-										target:self
-										selector:@selector(hideDateAfterDelay)
-										userInfo:nil
-										repeats:NO];	
-
-		});
-	}
 }
 
 %end
+
+%hook CSCoverSheetViewController
+
+	-(void)viewDidLoad {
+		%orig;
+
+
+  		// modeStyleArbiter = [%c(UIUserInterfaceStyleArbiter) sharedInstance];
+		// style = modeStyleArbiter.currentStyle;
+		// styleString = [NSString stringWithFormat:@"%lld", style];
+
+
+		UIViewController *_self = (UIViewController *)self;
+
+		if(isEnabled){
+
+			// if(firstTimeHide){
+			// 	dateIsHidden = TRUE;	
+			// 	if(kCFCoreFoundationVersionNumber>1655){
+			// 	[timeVC _updateView];
+			// 	}else{
+			// 		ios12TimeVC.view.hidden = TRUE;
+			// 	}
+			// 	if(isHideNotificationsEnabled){
+			// 		notifVC.scrollView.hidden = TRUE;
+			// 		// HBLogWarn(@"firsttimehide");
+			// 	}
+			// firstTimeHide = FALSE;
+			// }
+
+			if([userInteractionMode isEqualToString:@"tap"]){
+				// %orig;
+				UITapGestureRecognizer *tapPress =  [[UITapGestureRecognizer alloc] initWithTarget:_self action:@selector(handleTap:)];
+				tapPress.numberOfTapsRequired = (int)numberOfTaps;
+				tapPress.numberOfTouchesRequired = (int)numberOfFingersTapped;
+				[_self.view addGestureRecognizer:tapPress];
+			}else if([userInteractionMode isEqualToString:@"longPress"]){
+				// %orig;
+				UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:_self action:@selector(handleLongPress:)];
+				longPress.minimumPressDuration = longPressDuration;
+				longPress.numberOfTouchesRequired = (int)numberOfFingersHeld;
+				longPress.allowableMovement = allowableMovement;
+				[_self.view addGestureRecognizer: longPress];
+			}else{
+				// %orig;
+			}
+		}else{
+			// %orig;
+		}
+		// UILongPressGestureRecognizer *testLongPress = [[UILongPressGestureRecognizer alloc] initWithTarget:_self action:@selector(handleLongPress:)];
+
+		// testLongPress.minimumPressDuration = 0.25;
+		// testLongPress.numberOfTouchesRequired = 1;
+		// // testLongPress.delaysTouchesEnded = YES;
+		// [_self.view addGestureRecognizer: testLongPress];
+
+		
+	}
+
+
+	%new
+	-(void)handleTap:(UITapGestureRecognizer *)sender{
+
+		if([tapControlMode isEqualToString:@"toggle"]){
+			if(!dateIsHidden){
+				hide();
+			}else{
+				show();	
+			}	
+		}
+		else if([tapControlMode isEqualToString:@"automaticallyHide"]){
+
+		if(!dateIsHidden){
+
+		}else{
+		
+			show();
+
+			//credits to NoisyFlake for the timer code and getting it to run in the main thread
+			//https://github.com/NoisyFlake/OhMyFlash
+			dispatch_async(dispatch_get_main_queue(), ^{
+				longPressTimer = [NSTimer scheduledTimerWithTimeInterval:clockDisplayDuration
+											target:self
+											selector:@selector(hideDateAfterDelay)
+											userInfo:nil
+											repeats:NO];	
+			});
+		}
+		}else{
+
+		}
+	}
+
+	%new
+	-(void)hideDateAfterDelay{
+		hide();
+	}
+
+	%new 
+	-(void)handleLongPress:(UILongPressGestureRecognizer *)sender{
+		if([longPressControlMode isEqualToString:@"toggle"]){
+			if(!areElementsHidden){
+				hide();
+				prepareLongPressToggleToBeShownTimer = [NSTimer scheduledTimerWithTimeInterval:1
+											target:self
+											selector:@selector(prepareLongPressToggleToBeShown)
+											userInfo:nil
+											repeats:NO];	
+
+			}else{
+				show();
+				prepareLongPressToggleToBeShownTimer = [NSTimer scheduledTimerWithTimeInterval:1
+											target:self
+											selector:@selector(prepareLongPressToggleToBeHidden)
+											userInfo:nil
+											repeats:NO];	
+
+			}
+		}else if([longPressControlMode isEqualToString:@"automaticallyHide"]){
+			if(!dateIsHidden){
+
+			}else{
+				show();
+				//credits to NoisyFlake for the timer code and getting it to run in the main thread
+				//https://github.com/NoisyFlake/OhMyFlash
+				dispatch_async(dispatch_get_main_queue(), ^{
+					longPressTimer = [NSTimer scheduledTimerWithTimeInterval:clockDisplayDuration
+												target:self
+												selector:@selector(hideDateAfterDelay)
+												userInfo:nil
+												repeats:NO];	
+				});
+			}
+		}else {
+		}
+	}
+		
+	
+
+	%new 
+	-(void)prepareLongPressToggleToBeShown {
+		areElementsHidden = TRUE;
+	}
+
+	%new 
+	-(void)prepareLongPressToggleToBeHidden {
+		areElementsHidden = FALSE;
+	}
+
+%end
+
+
 
 
 //add if the control mode is automaticallyhide too
@@ -346,7 +406,7 @@ else{
 -(void)_trackingDidBegin{
 	%orig;
 	// HBLogWarn(@"StringMode %@", userInteractionMode);
-	if(isEnabled&&isHideNotificationsEnabled&&([longPressControlMode isEqualToString:@"automaticallyHide"]||[tapControlMode isEqualToString:@"automaticallyHide"])){
+	if(isEnabled&&isHideNotificationsEnabled&&(([userInteractionMode isEqualToString:@"longPress"]&&[longPressControlMode isEqualToString:@"automaticallyHide"])||([userInteractionMode isEqualToString:@"tap"]&&[tapControlMode isEqualToString:@"automaticallyHide"]))){
 	[longPressTimer invalidate];
 	
 	dispatch_async(dispatch_get_main_queue(), ^{
@@ -359,11 +419,10 @@ else{
 	}
 }
 
-
 //hides the notifs once the user stops scrolling
 -(void)_scrollViewDidEndDecelerating{
 	%orig;
-	if(isEnabled&&isHideNotificationsEnabled&&([longPressControlMode isEqualToString:@"automaticallyHide"]||[tapControlMode isEqualToString:@"automaticallyHide"])){
+	if(isEnabled&&isHideNotificationsEnabled&&(([userInteractionMode isEqualToString:@"longPress"]&&[longPressControlMode isEqualToString:@"automaticallyHide"])||([userInteractionMode isEqualToString:@"tap"]&&[tapControlMode isEqualToString:@"automaticallyHide"]))){
 	dispatch_async(dispatch_get_main_queue(), ^{
 			stoppedScrollingTimer = [NSTimer scheduledTimerWithTimeInterval:clockDisplayDuration
 										target:self
@@ -376,7 +435,7 @@ else{
 
 %new
 -(void)hideNotifsAfterScrollingEnds{
-	[notifVC hideDateAfterDelay];
+	hide();
 }
 
 %end
