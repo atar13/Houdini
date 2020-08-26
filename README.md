@@ -10,7 +10,7 @@
 </p>
 
 ## Installation
-Add atar13.github.io to your favorite package manager and install the package from the repository. 
+Add [atar13.github.io](https://atar13.github.io) to your favorite package manager and install the package from the repository. 
 
 ---
 ## Description
