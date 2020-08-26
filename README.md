@@ -1,5 +1,5 @@
 # Houdini
-iOS jailbreak tweak that hides the lock screen clock/date and other lock screen elements until the user manually taps the screen.
+### iOS jailbreak tweak that hides the lock screen clock/date and other lock screen elements until the user manually taps the screen.
 ---
 
 <p align="center">
