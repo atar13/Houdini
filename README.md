@@ -15,7 +15,7 @@ Add atar13.github.io to your favorite package manager and install the package fr
 -Additional option to hide elements when the phone's screen turns off. 
 -Support tweaks like: Jellyfish, Kalm, Axon, Complications, Dualclock.
 
-** *Not Compatible with SimpleLS2 and partly compatible with ColorFlow 5's full scren mode.**
+** Not Compatible with SimpleLS2 and partly compatible with ColorFlow 5's full scren mode.**
 
 ---
 ## License
