@@ -1,9 +1,12 @@
 # Houdini
 iOS jailbreak tweak that hides the lock screen clock/date and other lock screen elements until the user manually taps the screen.
-
-![Example Screenshot](https://atar13.github.io/depictions/com.atar13.houdini/screenshots/houdiniBA.png)
-
 ---
+
+<p align="center">
+  <img src="https://atar13.github.io/depictions/com.atar13.houdini/screenshots/houdiniBA.png">
+</p>
+
+
 ## Installation
 Add atar13.github.io to your favorite package manager and install the package from the repository. 
 
