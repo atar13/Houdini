@@ -5,7 +5,9 @@ iOS jailbreak tweak that hides the lock screen clock/date and other lock screen 
 <p align="center">
   <img src="https://atar13.github.io/depictions/com.atar13.houdini/screenshots/houdiniBA.png">
 </p>
-
+<p align="center">
+  <img src="https://atar13.github.io/depictions/com.atar13.houdini/screenshots/CUZB1419.gif">
+</p>
 
 ## Installation
 Add atar13.github.io to your favorite package manager and install the package from the repository. 
