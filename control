@@ -3,7 +3,7 @@ Version: 1.2
 Architecture: iphoneos-arm
 Maintainer: atar13 <atar13dev@gmail.com>
 Depends: mobilesubstrate, preferenceloader, ws.hbang.common
-Filename: ./debs/com.atar13.houdini_1.0_iphoneos-arm.deb
+Filename: ./debs/com.atar13.houdini_1.2_iphoneos-arm.deb
 Section: Tweaks
 Description: By default hides the lock screen clock until the user manually taps the screen.
 Author: atar13 <atar13dev@gmail.com>
