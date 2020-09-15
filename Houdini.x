@@ -36,10 +36,13 @@
 @interface NCNotificationListView : UIScrollView
 @end
 
-@interface CSQuickActionsViewController : UIViewController
+@interface CSCoverSheetViewControllerBase : UIViewController
 @end
 
-@interface CSTeachableMomentsContainerViewController : UIViewController
+@interface CSQuickActionsViewController : CSCoverSheetViewControllerBase
+@end
+
+@interface CSTeachableMomentsContainerViewController : CSCoverSheetViewControllerBase
 -(id)view;
 @end
 
