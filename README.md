@@ -3,10 +3,10 @@
 ---
 
 <p align="center">
-  <img src="https://atar13.github.io/depictions/com.atar13.houdini/screenshots/houdiniBA.png">
+  <img src="https://atar13.github.io/assets/com.atar13.houdini/HoudiniBA.png">
 </p>
 <p align="center">
-  <img src="https://atar13.github.io/depictions/com.atar13.houdini/screenshots/CUZB1419.gif">
+  <img src="https://atar13.github.io/assets/com.atar13.houdini/Houdini.gif">
 </p>
 
 ## Installation
