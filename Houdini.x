@@ -1,4 +1,5 @@
 #import <Cephei/HBPreferences.h>
+#import <UIKit/UIKit.h>
 
 //TODO:
 //hide when phone is locked

@@ -1,6 +1,7 @@
 export ARCHS = arm64 arm64e
-export SDKVERSION = 13.3
+export SDKVERSION = 13.5
 
+TARGET := iphone:clang:13.0:latest
 INSTALL_TARGET_PROCESSES = SpringBoard
 
 include $(THEOS)/makefiles/common.mk
