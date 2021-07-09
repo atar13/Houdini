@@ -88,6 +88,8 @@ double clockDisplayDuration;
 
 BOOL isHideOnScreenLockEnabled;
 
+BOOL hideOnRespring;
+
 BOOL isHideNotificationsEnabled;
 
 BOOL isHideQuickActionsEnabled;
@@ -228,7 +230,7 @@ NSTimer *prepareLongPressToggleToBeShownTimer = nil;
 -(void)viewDidAppear:(BOOL)arg1{
 	%orig;
 	if(arg1){
-		if(isEnabled&&firstTimeHide){
+		if(isEnabled&&firstTimeHide&&hideOnRespring){
 			hide();
 			firstTimeHide = FALSE;
 		}
@@ -498,6 +500,7 @@ void updateSettings(){
 	[prefs registerDouble:&clockDisplayDuration default:0.5 forKey:@"clockDisplayDuration"];
 
 	[prefs registerBool:&isHideOnScreenLockEnabled default:FALSE forKey:@"isHideOnScreenLockEnabled"];
+	[prefs registerBool:&hideOnRespring default:TRUE forKey:@"hideOnRespring"];
 
 	[prefs registerBool:&isHideNotificationsEnabled default:FALSE forKey:@"isHideNotificationsEnabled"];
 

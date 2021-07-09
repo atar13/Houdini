@@ -128,6 +128,20 @@
 		</dict>
 		<dict>
 			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.atar13.houdiniprefs</string>
+			<key>key</key>
+			<string>hideOnRespring</string>
+			<key>label</key>
+			<string>Hide after respring</string>
+			<key>PostNotification</key>
+			<string>com.atar13.houdiniprefs/ReloadPrefs</string>
+		</dict>
+		<dict>
+			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
 			<string>Also hides complications from the tweak Complications</string>
