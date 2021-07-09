@@ -1,3 +1,10 @@
+# SDKVERSION = 14.3
+# SYSROOT = $(THEOS)/sdks/iPhoneOS14.3.sdk
+ARCHS = arm64 arm64e
+SDKVERSION = 14.3
+TARGET := iphone:clang:14.3:latest
+SYSROOT = $(THEOS)/sdks/iPhoneOS14.3.sdk
+
 include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = houdiniprefs
